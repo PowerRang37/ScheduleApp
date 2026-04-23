@@ -1742,6 +1742,86 @@ function exportCoursesCSV(){
   a.download='courses_'+new Date().toISOString().slice(0,10)+'.csv';a.click();
 }
 
+
+// ══ PATCHED CORE HELPERS ═════════════════════════════════════════════════════
+function closeOverlay(id){
+  const el=document.getElementById(id);
+  if(el) el.classList.remove('open');
+}
+
+function renderAll(){
+  updateFilter();
+  const msTabs=document.getElementById('msSubtabs');
+  const secTabs=document.getElementById('secSubtabs');
+  const schedContent=document.getElementById('schedContent');
+  const cbContent=document.getElementById('cbContent');
+  const tgContent=document.getElementById('tgContent');
+
+  if(msTabs) msTabs.style.display = school==='ms' ? 'flex' : 'none';
+  if(secTabs) secTabs.style.display = school==='sec' ? 'flex' : 'none';
+
+  if(schedContent) schedContent.style.display='';
+  if(cbContent) cbContent.style.display='none';
+  if(tgContent) tgContent.style.display='none';
+
+  if(school==='ms' && _msTab==='traveling'){
+    if(schedContent) schedContent.style.display='none';
+    if(tgContent) tgContent.style.display='';
+    renderTGPanel();
+  }else if(school==='sec' && _secTab==='courses'){
+    if(schedContent) schedContent.style.display='none';
+    if(cbContent) cbContent.style.display='';
+    renderCourseBuilder();
+  }else{
+    renderSchedule();
+  }
+
+  renderTeachers();
+  renderStats();
+  renderRP();
+}
+
+function switchSchool(sc,el){
+  school=sc;
+  document.querySelectorAll('.schobar .stab').forEach(x=>x.classList.remove('active'));
+  if(el) el.classList.add('active');
+  renderAll();
+}
+
+function openTDash(){
+  const el=document.getElementById('tdash');
+  if(el) el.classList.add('open');
+  if(typeof renderTDash==='function') renderTDash();
+}
+
+function closeTDash(){
+  const el=document.getElementById('tdash');
+  if(el) el.classList.remove('open');
+}
+
+function setTDView(view,btn){
+  document.querySelectorAll('.td-view-btn').forEach(x=>x.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  const body=document.getElementById('tdBody');
+  if(body) body.innerHTML = '<div style="padding:12px;color:var(--ink3);font-size:12px">Teacher dashboard view is not fully wired yet in this version.</div>';
+}
+
+function openSSV(){
+  const el=document.getElementById('ssvWrap');
+  if(el) el.classList.add('open');
+}
+
+function printSSV(){ window.print(); }
+function printTeacherSchedule(){ window.print(); }
+function printClassSchedule(){ window.print(); }
+
+function runAutoFill(){
+  const sel=document.getElementById('autoTarget');
+  if(sel && sel.value){
+    alert('Auto-fill is not fully implemented in this file yet. Target selected: '+sel.options[sel.selectedIndex].text);
+  }
+}
+
 renderAll();
 
 </script>
