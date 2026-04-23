@@ -331,6 +331,8 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
 
 </style>
 </head>
+
+</head>
 <body>
 <div class="topbar">
   <h1>Schedule Builder 2025-26</h1>
@@ -552,7 +554,9 @@ body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(
   </div>
 </div>
 
+
 <script>
+
 
 // ══ CONSTANTS ═════════════════════════════════════════════════════════════════
 const PERIODS = ['A','B','C','D','E','F','F2','G','H'];
@@ -1104,11 +1108,7 @@ function createAndSelectSubj() {
   if (mT) renderMS(mT);
 }
 
-function confirmAssign() {
-  if (!mT || !mS) { alert('Choose a teacher and subject.'); return; }
-  setCell(mCell.grp, mCell.sec, mCell.p, {teacherId:mT, subjectId:mS});
-  closeModal(); renderAll();
-}
+// confirmAssign defined below (TG-aware)
 function closeModal() { document.getElementById('overlay').classList.remove('open'); mCell=mT=mS=null; }
 function removeCell(g,s,p,e) { e.stopPropagation(); setCell(g,s,p,null); renderAll(); }
 function onDrop(e,g,s,p) { e.preventDefault(); if(selT) openModal(g,s,p); }
@@ -1302,299 +1302,7 @@ function showAuto() {
   document.getElementById('autoTarget').innerHTML=curG().map(g=>`<option value="${g.id}">${g.lbl}</option>`).join('');
   document.getElementById('autoBn').style.display='flex';
 }
-function runAutoFill() {
-  const target = document.getElementById('autoTarget').value;
-  const secs = (cur().sections[target]||[]).filter(s=>s!=='__ex__');
-  const order = school==='ms'?['ss','rla','ie','math','science','cultural','kazakh','russian','spanish','french','kazhist','art','music','pe','tech']:school==='sec'?['lit1','lit2','aplit','ie_s','math_s','precalc','calc','bio','chem','phys','hist_s','kaz_s','kazhist_s','rus_s','spa_s','fre_s','art_s','music_s','pe_s','tech_s','econ','sr']:['la','math_e','reading','writing','cs_e','pe_e','art_e','music_e','lib','tech_e','so_e','sn','ie_e'];
-  secs.forEach(sec => {
-    order.forEach(subjId => {
-      if(PERIODS.some(p=>{const c=getCell(target,sec,p);return c&&c.subjectId===subjId;}))return;
-      for(const p of PERIODS) {
-        if(getCell(target,sec,p))continue;
-        const t=curT().find(t=>(t.subj||[]).includes(subjId)&&!getTchAll(t.id).some(a=>a.period===p&&!(a.grpId===target&&a.secId===sec)));
-        if(t){setCell(target,sec,p,{teacherId:t.id,subjectId:subjId});break;}
-      }
-    });
-  });
-  document.getElementById('autoBn').style.display='none'; renderAll();
-}
-
-// ══ TEACHER DASHBOARD ══════════════════════════════════════════════════════════
-let _tdView = 'weekly';
-function openTDash(tab) {
-  document.querySelectorAll('.stab').forEach(t=>t.classList.remove('active')); tab.classList.add('active');
-  document.getElementById('tdash').classList.add('open'); renderTDash();
-}
-function closeTDash() {
-  document.getElementById('tdash').classList.remove('open');
-  document.querySelectorAll('.stab').forEach((t,i)=>{if(i===0)t.classList.add('active');});
-}
-function setTDView(v,btn) { _tdView=v; document.querySelectorAll('.td-view-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); renderTDash(); }
-function renderTDash() {
-  const q=(document.getElementById('tdSearch')?.value||'').toLowerCase();
-  const sc=document.getElementById('tdSchool')?.value||'all';
-  const teachers=TEACHERS.filter(t=>(!q||t.name.toLowerCase().includes(q))&&(sc==='all'||t.schools.includes(sc)));
-  const body=document.getElementById('tdBody'); if(!body)return;
-  if(_tdView==='weekly')tdWeekly(teachers,body);
-  else if(_tdView==='conflicts')tdConflicts(teachers,body);
-  else tdLoad(teachers,body);
-}
-function tdWeekly(teachers, body) {
-  document.getElementById('tdSummary').textContent=teachers.length+' teachers';
-  body.innerHTML=teachers.map(t=>{
-    const asgns=getTchAll(t.id);
-    const pct=Math.round(asgns.length/PERIODS.length*100);
-    const barC=pct>88?'var(--red)':pct>66?'var(--amber)':'var(--green)';
-    const scTags=t.schools.map(sc=>`<span style="background:${sc==='ms'?'var(--blue2)':sc==='sec'?'var(--purple2)':'var(--teal2)'};color:${sc==='ms'?'var(--blue)':sc==='sec'?'var(--purple)':'var(--teal)'};padding:1px 6px;border-radius:3px;font-size:9px;font-weight:700">${sc.toUpperCase()}</span>`).join('');
-    const cells=PERIODS.map(p=>{
-      const pa=asgns.filter(a=>a.period===p);
-      if(pa.length>1){
-        const allSameGrp=pa.every(a=>a.grpId===pa[0].grpId);
-        return `<div class="tdc ${allSameGrp?'tdc-cyellow':'tdc-cred'}"><div class="pc-p">${p}</div><div class="pc-s">${allSameGrp?'◐ Multi-sec':'⚠ CONFLICT'}</div><div class="pc-sec">${pa.map(a=>a.secId).join('/')}</div></div>`;
-      }
-      if(pa.length===1){
-        const a=pa[0];const s=sById(a.subjId);
-        return `<div class="tdc tdc-${a.sc}"><div class="pc-p">${p}</div><div class="pc-s">${s?.name||a.subjId}</div><div class="pc-sec">${a.secId}</div>
-          <span class="td-cx" onclick="tdRemoveCell('${a.sc}','${a.grpId}','${a.secId}','${p}')">×</span></div>`;
-      }
-      return `<div class="tdc tdc-empty"><div class="pc-p">${p}</div></div>`;
-    }).join('');
-    return `<div class="td-block"><div class="td-tch-hd"><div class="td-tch-name">${t.name}</div><div class="td-tch-room">Rm ${t.room}</div><div class="td-sch-tags" style="display:flex;gap:3px">${scTags}</div><div class="td-load-bar"><div class="td-load-fill" style="width:${pct}%;background:${barC}"></div></div><div class="td-load-lbl">${asgns.length}/${PERIODS.length}</div></div><div class="td-pgrid">${cells}</div></div>`;
-  }).join('')||'<div style="text-align:center;padding:32px;color:var(--ink3)">No teachers match filter</div>';
-}
-function tdRemoveCell(sc, grpId, secId, p) {
-  if(!state[sc].sched[grpId]?.[secId]) return;
-  delete state[sc].sched[grpId][secId][p];
-  renderTDash(); renderAll();
-}
-function tdConflicts(teachers, body) {
-  const conflicts=[];
-  teachers.forEach(t=>{
-    const byP={};
-    getTchAll(t.id).forEach(a=>{ if(!byP[a.period])byP[a.period]=[]; byP[a.period].push(a); });
-    PERIODS.forEach(p=>{ if(byP[p]?.length>1) conflicts.push({t,p,slots:byP[p]}); });
-  });
-  document.getElementById('tdSummary').textContent=conflicts.length?`⚠ ${conflicts.length} conflicts`:'✓ No conflicts';
-  if(!conflicts.length){body.innerHTML='<div class="no-conf">✓ No scheduling conflicts</div>';return;}
-  body.innerHTML=conflicts.map(c=>{
-    const allSameGrp=c.slots.every(a=>a.grpId===c.slots[0].grpId);
-    const cls=allSameGrp?'conf-yellow':'';
-    const icon=allSameGrp?'◐':'⚠';
-    const desc=allSameGrp?'Same-class multi-section':'Cross-class conflict';
-    const rows=c.slots.map(s=>{const subj=sById(s.subjId);return `<div class="conf-row"><strong>${s.sc.toUpperCase()}</strong> ${s.secId}${subj?' — '+subj.name:''}</div>`;}).join('');
-    return `<div class="conf-card ${cls}"><h3>${icon} ${c.t.name} · Period ${c.p} · ${desc}</h3>${rows}</div>`;
-  }).join('');
-}
-function tdLoad(teachers, body) {
-  const data=teachers.map(t=>{const a=getTchAll(t.id);return{t,n:a.length,free:PERIODS.length-a.length};}).sort((a,b)=>b.n-a.n);
-  const maxP=PERIODS.length;
-  document.getElementById('tdSummary').textContent='Avg '+Math.round(data.reduce((s,d)=>s+d.n,0)/Math.max(data.length,1)*10)/10+' periods/teacher';
-  body.innerHTML=`<table class="load-tbl"><thead><tr><th>Teacher</th><th>Room</th><th>Schools</th><th>Assigned</th><th>Free</th><th>Load</th></tr></thead><tbody>`+
-  data.map(d=>{
-    const pct=Math.round(d.n/maxP*100);
-    const c=pct>88?'var(--red)':pct>66?'var(--amber)':pct>33?'var(--blue)':'var(--green)';
-    const sc=d.t.schools.map(s=>`<span style="color:${s==='ms'?'var(--blue)':s==='sec'?'var(--purple)':'var(--teal)'};font-size:10px;font-weight:700">${s.toUpperCase()}</span>`).join(' ');
-    return `<tr><td style="font-weight:600">${d.t.name}</td><td style="color:var(--ink3)">${d.t.room}</td><td>${sc}</td><td style="text-align:center;font-weight:700;color:${pct>88?'var(--red)':'var(--ink)'}">${d.n}</td><td style="text-align:center;color:${d.free===0?'var(--red)':'var(--green)'}">${d.free}</td><td><div class="lbar-wrap"><div class="lbar-bg"><div class="lbar-fg" style="width:${pct}%;background:${c}"></div></div><span style="font-size:10px;color:var(--ink3);min-width:30px">${pct}%</span></div></td></tr>`;
-  }).join('')+'</tbody></table>';
-}
-
-// ══ STUDENT SCHEDULE VIEWER ═══════════════════════════════════════════════════
-let _ssvSel=null;
-function openSSV(){document.getElementById('ssvQ').value='';document.getElementById('ssvBody').innerHTML='<div class="ssv-empty">Search for a student</div>';_ssvSel=null;document.getElementById('ssvWrap').classList.add('open');}
-function ssvSearch(){
-  const q=document.getElementById('ssvQ').value.toLowerCase().trim();
-  const sc=document.getElementById('ssvSch').value;
-  const body=document.getElementById('ssvBody');
-  if(!q||q.length<2){body.innerHTML='<div class="ssv-empty">Type at least 2 characters</div>';return;}
-  const clsMap={ms:[11,12,13],sec:[14,15,16,17],ele:[3,4,5,6,7,8,9,10]};
-  let pool=state.students||[];
-  if(sc!=='all')pool=pool.filter(s=>clsMap[sc]?.includes(Number(s.cls)));
-  const matches=pool.filter(s=>s.name.toLowerCase().includes(q)).slice(0,40);
-  if(!matches.length){body.innerHTML='<div class="ssv-empty">No students found</div>';return;}
-  body.innerHTML='<div>'+matches.map(s=>{
-    const g=getStudentGrp(s);const bg=g?.bg||'#eee';const sec=s.section||null;
-    return `<div class="stu-row ${_ssvSel?.id===s.id?'active':''}" onclick="ssvShow('${s.id}')">
-      <span style="background:${bg};padding:1px 6px;border-radius:3px;font-size:9px;font-weight:700">${g?.badge||s.cls}</span>
-      <span style="font-size:12px;font-weight:600;flex:1">${s.name}</span>
-      <span style="font-size:10px;color:var(--ink3)">${s.sex||''}</span>
-      <span style="font-size:10px;color:${sec?'var(--green)':'var(--amber)'}">${sec||'No section'}</span>
-    </div>`;
-  }).join('')+'</div>';
-}
-function getStudentGrp(s){
-  const sc=s.cls>=11&&s.cls<=13?'ms':s.cls>=14&&s.cls<=17?'sec':'ele';
-  const m={11:'ms11',12:'ms12',13:'ms13',14:'s1',15:'s2',16:'s3',17:'s4'};
-  const gid=m[s.cls]||s.homeroom;
-  return GROUPS[sc]?.find(g=>g.id===gid);
-}
-function ssvShow(sid){
-  _ssvSel=state.students?.find(s=>s.id===sid);
-  if(!_ssvSel)return;
-  ssvSearch();// re-render list with highlight
-  const s=_ssvSel;
-  const sc=s.cls>=11&&s.cls<=13?'ms':s.cls>=14&&s.cls<=17?'sec':'ele';
-  const g=getStudentGrp(s);const sec=s.section;
-  const bg=g?.bg||'#eee';
-  let schedHtml='';
-  if(sec&&g){
-    const sched=state[sc]?.sched[g.id]?.[sec]||{};
-    if(Object.keys(sched).length){
-      schedHtml=`<table class="ssv-tbl"><thead><tr><th>Period</th><th>Time</th><th>Subject</th><th>Teacher</th></tr></thead><tbody>`+
-      PERIODS.map(p=>{
-        const c=sched[p];
-        if(!c)return`<tr><td style="font-family:monospace;font-weight:700;color:var(--ink3)">${p}</td><td style="font-size:10px;color:var(--ink3)">${PT[p]}</td><td colspan="2" style="color:#ddd">—</td></tr>`;
-        const t2=tById(c.teacherId);const subj=sById(c.subjectId);
-        return `<tr><td style="font-family:monospace;font-weight:700;color:var(--ink3)">${p}</td><td style="font-size:10px;color:var(--ink3)">${PT[p]}</td><td><span class="ssv-subj" style="background:${subj?.col||'#eee'};color:${subj?.tc||'#333'}">${subj?.name||c.subjectId}</span></td><td style="color:var(--ink2)">${t2?.name||c.teacherId}<span style="color:var(--ink3);font-size:10px"> · Rm ${t2?.room||''}</span></td></tr>`;
-      }).join('')+'</tbody></table>';
-    } else schedHtml='<div style="font-size:11px;color:var(--ink3);padding:12px;background:var(--bg);border-radius:6px">No schedule in section '+sec+'</div>';
-  } else schedHtml=`<div style="font-size:11px;color:var(--amber);background:var(--amber2);padding:8px 12px;border-radius:6px">No section assigned to this student.</div>`;
-  document.getElementById('ssvBody').innerHTML=`<div style="padding-top:10px">
-    <div style="background:var(--bg);border:1px solid var(--rule);border-radius:8px;padding:11px 13px;margin-bottom:10px">
-      <div style="font-size:15px;font-weight:700;margin-bottom:3px">${s.name}</div>
-      <div style="font-size:11px;color:var(--ink3);display:flex;gap:10px;flex-wrap:wrap">
-        <span><span style="background:${bg};padding:1px 6px;border-radius:3px;font-size:9px;font-weight:700">${g?.badge||s.cls}</span> ${g?.lbl||''}</span>
-        ${s.sex?`<span>${s.sex==='M'?'Male':'Female'}</span>`:''}
-        ${s.nationality?`<span>${s.nationality}</span>`:''}
-        <span style="color:${sec?'var(--green)':'var(--amber)'}">Section: ${sec||'None'}</span>
-      </div>
-    </div>${schedHtml}</div>`;
-}
-function printSSV(){
-  const content=document.querySelector('#ssvBody');
-  if(!content){alert('Open a student first.');return;}
-  const w=window.open('','_blank');
-  const css="body{font-family:Arial,sans-serif;padding:24px;font-size:12px}table{width:100%;border-collapse:collapse;margin-top:12px}th{background:#2a2a2e;color:#fff;padding:7px 10px;text-align:left}td{padding:6px 10px;border-bottom:1px solid #eee}.ssv-subj{display:inline-block;padding:2px 7px;border-radius:4px;font-weight:600}";
-  w.document.write('<html><head><title>Schedule</title><style>'+css+'</style></head><body>'+content.innerHTML+'</body></html>');
-  w.document.close();
-  w.print();
-}
-
-// ── PRINT CLASS SCHEDULE ──────────────────────────────────────────────────────
-function printClassSchedule() {
-  const val = document.getElementById('printClassSel').value;
-  if (!val) { alert('Select a class first.'); return; }
-  const [sc, grpId] = val.split('|');
-  const grp = GROUPS[sc]?.find(g=>g.id===grpId); if (!grp) return;
-  const secs = (state[sc]?.sections[grpId]||[]);
-  const sched = state[sc]?.sched[grpId]||{};
-  const displaySecs = secs.filter(s=>s!=='__ex__');
-
-  const cols = displaySecs.map(sec=>'<th>'+sec+'</th>').join('');
-  const rows = PERIODS.map(p => {
-    const cells = displaySecs.map(sec => {
-      const cell = (sched[sec]||{})[p];
-      if (!cell) return '<td style="color:#ccc">—</td>';
-      const t2=tById(cell.teacherId); const s=sById(cell.subjectId);
-      return '<td><b style="font-size:11px">'+(s?.name||cell.subjectId)+'</b><br><span style="color:#888;font-size:10px">'+(t2?.name||cell.teacherId)+'</span></td>';
-    }).join('');
-    return '<tr><td style="font-weight:700;font-family:monospace;color:#666">'+p+'<br><span style="font-size:9px;font-weight:400;color:#999">'+PT[p]+'</span></td>'+cells+'</tr>';
-  }).join('');
-
-  let tgHtml = '';
-  if (sc==='ms') {
-    const age = grpId==='ms11'?11:grpId==='ms12'?12:13;
-    const tgs = state.travelingGroups?.[age]||[];
-    if (tgs.length) {
-      const tgCols = tgs.map(g=>'<th>'+g.id+'<br><span style="font-size:9px;font-weight:400">'+g.name+'</span></th>').join('');
-      const tgRows2 = DAYS.map(day=>{
-        const cells2 = tgs.map(g=>{
-          const p1=g.schedule?.[day]?.P1; const p2=g.schedule?.[day]?.P2;
-          const s1=p1?.subj?TG_SUBJECTS[p1.subj]?.name:'—'; const s2=p2?.subj?TG_SUBJECTS[p2.subj]?.name:'—';
-          const t1=p1?.teacherId?tById(p1.teacherId)?.name.split(',')[0]:''; const t2=p2?.teacherId?tById(p2.teacherId)?.name.split(',')[0]:'';
-          return '<td style="font-size:10px"><b>'+s1+'</b>'+(t1?' '+t1:'')+'<br><b>'+s2+'</b>'+(t2?' '+t2:'')+'</td>';
-        }).join('');
-        return '<tr><td><b>'+day+'</b></td>'+cells2+'</tr>';
-      }).join('');
-      tgHtml = '<h3>Traveling Groups Specials (P1 8:00 / P2 8:48)</h3><table><thead><tr><th>Day</th>'+tgCols+'</tr></thead><tbody>'+tgRows2+'</tbody></table>';
-    }
-  }
-
-  const pcss = 'body{font-family:Arial,sans-serif;padding:24px;font-size:12px}h2{margin-bottom:4px}h3{color:#555;margin:16px 0 6px}p{color:#888;margin-bottom:12px}table{width:100%;border-collapse:collapse;margin-top:8px}th{background:#2a2a2e;color:#fff;padding:7px 10px;text-align:left;font-size:11px}td{padding:6px 10px;border-bottom:1px solid #eee;vertical-align:top}';
-  const w = window.open('','_blank');
-  w.document.write('<html><head><title>'+grp.lbl+'</title><style>'+pcss+'</style></head><body><h2>'+grp.lbl+'</h2><p>'+grp.students+' students | '+displaySecs.length+' sections | 2025-26</p><h3>Core Schedule (P3-P8, daily)</h3><table><thead><tr><th style="width:70px">Period</th>'+cols+'</tr></thead><tbody>'+rows+'</tbody></table>'+tgHtml+'</body></html>');
-  w.document.close(); w.print();
-}
-
-// ══ PERSIST ══════════════════════════════════════════════════════════════════
-function saveState(){
-  localStorage.setItem('school_sched_v5',JSON.stringify(state));
-  const b=document.querySelector('.hbtn.pri');
-  b.textContent='Saved ✓';setTimeout(()=>b.textContent='Save',1800);
-}
-function loadState(){try{const r=localStorage.getItem('school_sched_v5');return r?JSON.parse(r):null;}catch{return null;}}
-function clearSched(){
-  if(!confirm('Clear all schedule assignments for '+school+'?'))return;
-  GROUPS[school].forEach(g=>{const ex=state[school].sched[g.id]?.['__ex__'];state[school].sched[g.id]={};if(ex)state[school].sched[g.id]['__ex__']=ex;});
-  renderAll();
-}
-
-// ══ EXPORT SCHEDULE CSV ═══════════════════════════════════════════════════════
-function exportCSV(){
-  const rows=[['School','Group','Section','Period','Time','Teacher','Room','Subject']];
-  ['ms','sec','ele'].forEach(sc=>{
-    GROUPS[sc].forEach(grp=>(state[sc].sections[grp.id]||[]).forEach(sec=>{
-      PERIODS.forEach(p=>{
-        const c=(state[sc].sched[grp.id]?.[sec]||{})[p];
-        if(c){const t=tById(c.teacherId);const s=sById(c.subjectId);
-          rows.push([sc.toUpperCase(),grp.lbl,sec==='__ex__'?'Existing':sec,p,PT[p],t?.name||c.teacherId,t?.room||'',s?.name||c.label||c.subjectId]);}
-      });
-    }));
-  });
-  const csv=rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(',')).join('\n');
-  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
-  a.download='schedule_'+new Date().toISOString().slice(0,10)+'.csv';a.click();
-}
-
-// ══ SWITCH SCHOOL (override to handle subtabs) ════════════════════════════════
-function switchSchool(sc,tab){
-  school=sc;selT=null;
-  document.querySelectorAll('.stab').forEach(t=>t.classList.remove('active'));
-  tab.classList.add('active');
-  const ms=document.getElementById('msSubtabs');
-  const ss=document.getElementById('secSubtabs');
-  const sc2=document.getElementById('schedContent');
-  const tg=document.getElementById('tgContent');
-  const cb=document.getElementById('cbContent');
-  if(ms)ms.style.display=sc==='ms'?'flex':'none';
-  if(ss)ss.style.display=sc==='sec'?'flex':'none';
-  if(sc==='ms'){
-    if(sc2)sc2.style.display=typeof _msTab!=='undefined'&&_msTab==='traveling'?'none':'';
-    if(tg)tg.style.display=typeof _msTab!=='undefined'&&_msTab==='traveling'?'':'none';
-    if(cb)cb.style.display='none';
-  } else if(sc==='sec'){
-    if(sc2)sc2.style.display=typeof _secTab!=='undefined'&&_secTab==='courses'?'none':'';
-    if(tg)tg.style.display='none';
-    if(cb)cb.style.display=typeof _secTab!=='undefined'&&_secTab==='courses'?'':'none';
-  } else {
-    if(sc2)sc2.style.display='';
-    if(tg)tg.style.display='none';
-    if(cb)cb.style.display='none';
-  }
-  updateFilter();renderAll();
-  if(sc==='sec'&&typeof renderCourseBuilder==='function')renderCourseBuilder();
-}
-
-// ══ AUTO-FILL ═════════════════════════════════════════════════════════════════
-function showAuto(){
-  document.getElementById('autoTarget').innerHTML=curG().map(g=>`<option value="${g.id}">${g.lbl}</option>`).join('');
-  document.getElementById('autoBn').style.display='flex';
-}
-function runAutoFill(){
-  const target=document.getElementById('autoTarget').value;
-  const secs=(cur().sections[target]||[]).filter(s=>s!=='__ex__');
-  const order=school==='ms'?['ss','rla','ie','math','science','cultural','kazakh','russian','spanish','french','kazhist','art','music','pe','tech']:school==='sec'?['lit1','lit2','aplit','ie_s','math_s','precalc','calc','bio','chem','phys','hist_s','kaz_s','kazhist_s','rus_s','spa_s','fre_s','art_s','music_s','pe_s','tech_s','econ','sr']:['la','math_e','reading','writing','cs_e','pe_e','art_e','music_e','lib','tech_e','so_e','sn','ie_e'];
-  secs.forEach(sec=>{
-    order.forEach(subjId=>{
-      if(PERIODS.some(p=>{const c=getCell(target,sec,p);return c&&c.subjectId===subjId;}))return;
-      for(const p of PERIODS){
-        if(getCell(target,sec,p))continue;
-        const t=curT().find(t=>(t.subj||[]).includes(subjId)&&!getTchAll(t.id).some(a=>a.period===p&&!(a.grpId===target&&a.secId===sec)));
-        if(t){setCell(target,sec,p,{teacherId:t.id,subjectId:subjId});break;}
-      }
-    });
-  });
-  document.getElementById('autoBn').style.display='none';renderAll();
-}
+// runAutoFill defined below
 
 // ══ TRAVELING GROUPS ══════════════════════════════════════════════════════════
 const DAYS=['Mon','Tue','Wed','Thu','Fri'];
@@ -1952,8 +1660,92 @@ function parseCourseCSV(text){const lines=text.trim().split('\n');const header=l
   if(school==='sec'&&typeof renderCourseBuilder==='function')renderCourseBuilder();
 })();
 
+
+// ══ PERSIST ══════════════════════════════════════════════════════════════════
+function saveState(){
+  localStorage.setItem('school_sched_v5',JSON.stringify(state));
+  const b=document.querySelector('.hbtn.pri');
+  if(b){b.textContent='Saved ✓';setTimeout(()=>b.textContent='Save',1800);}
+}
+function loadState(){try{const r=localStorage.getItem('school_sched_v5');return r?JSON.parse(r):null;}catch{return null;}}
+function clearSched(){
+  if(!confirm('Clear all schedule assignments for '+school+'?'))return;
+  GROUPS[school].forEach(g=>{const ex=state[school].sched[g.id]?.['__ex__'];state[school].sched[g.id]={};if(ex)state[school].sched[g.id]['__ex__']=ex;});
+  renderAll();
+}
+
+// ══ EXPORT SCHEDULE CSV ═══════════════════════════════════════════════════════
+function exportCSV(){
+  const rows=[['School','Group','Section','Period','Time','Teacher','Room','Subject']];
+  ['ms','sec','ele'].forEach(sc=>{
+    GROUPS[sc].forEach(grp=>(state[sc].sections[grp.id]||[]).forEach(sec=>{
+      PERIODS.forEach(p=>{
+        const c=(state[sc].sched[grp.id]?.[sec]||{})[p];
+        if(c){const t=tById(c.teacherId);const s=sById(c.subjectId);
+          rows.push([sc.toUpperCase(),grp.lbl,sec==='__ex__'?'Existing':sec,p,PT[p],t?.name||c.teacherId,t?.room||'',s?.name||c.label||c.subjectId]);}
+      });
+    }));
+  });
+  const csv=rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(',')).join('\n');
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
+  a.download='schedule_'+new Date().toISOString().slice(0,10)+'.csv';a.click();
+}
+
+// ══ EXPORT / IMPORT JSON ══════════════════════════════════════════════════════
+function openExportPanel(){
+  const tSel=document.getElementById('printTeacherSel');
+  if(tSel)tSel.innerHTML='<option value="">Select teacher</option>'+TEACHERS.slice().sort((a,b)=>a.name.localeCompare(b.name)).map(t=>`<option value="${t.id}">${t.name} Rm ${t.room}</option>`).join('');
+  const cSel=document.getElementById('printClassSel');
+  if(cSel){const opts=[...GROUPS.ms.map(g=>({sc:'ms',g})),...GROUPS.sec.map(g=>({sc:'sec',g})),...GROUPS.ele.map(g=>({sc:'ele',g}))];cSel.innerHTML='<option value="">Select class</option>'+opts.map(({sc,g})=>`<option value="${sc}|${g.id}">${g.lbl}</option>`).join('');}
+  document.getElementById('exportOverlay').classList.add('open');
+}
+
+function exportJSON(){
+  const backup={version:2,exportDate:new Date().toISOString(),schoolYear:'2025-26',state,teachers:TEACHERS,customSubjects:CUSTOM_SUBJECTS};
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([JSON.stringify(backup,null,2)],{type:'application/json'}));
+  a.download='schedule_backup_'+new Date().toISOString().slice(0,10)+'.json';a.click();
+}
+
+function importJSON(file){
+  if(!file)return;
+  const statusEl=document.getElementById('importJSONStatus');
+  const reader=new FileReader();
+  reader.onload=e=>{
+    try{
+      const backup=JSON.parse(e.target.result);
+      if(!backup.state)throw new Error('Invalid backup file');
+      if(!confirm('Load backup from '+(backup.exportDate?new Date(backup.exportDate).toLocaleDateString():'unknown')+'? This will replace all current data.'))return;
+      Object.assign(state,backup.state);
+      if(backup.customSubjects){CUSTOM_SUBJECTS.length=0;backup.customSubjects.forEach(s=>CUSTOM_SUBJECTS.push(s));}
+      if(backup.teachers&&backup.teachers.length){TEACHERS.length=0;backup.teachers.forEach(t=>{TEACHERS.push(t);TMAP[t.id]=t;});}
+      localStorage.setItem('school_sched_v5',JSON.stringify(state));
+      if(statusEl)statusEl.innerHTML='<span style="color:var(--green)">Loaded successfully</span>';
+      renderAll();
+      if(school==='sec')renderCourseBuilder();
+    }catch(err){
+      if(statusEl)statusEl.innerHTML='<span style="color:var(--red)">Error: '+err.message+'</span>';
+    }
+  };
+  reader.readAsText(file);
+  document.getElementById('importJSONFile').value='';
+}
+
+function exportCoursesCSV(){
+  const rows=[['Course','Grades','Subject','Section ID','Period','Teacher','Room','Students']];
+  (state.courses||[]).forEach(course=>{
+    if(!course.sections.length){rows.push([course.name,course.grades.join('+'),course.subjId||'','','','','','']);}
+    else course.sections.forEach(sec=>{const t=tById(sec.teacherId);rows.push([course.name,course.grades.join('+'),course.subjId||'',sec.id||'',sec.period||'',t?.name||'',t?.room||'',sec.studentCount||0]);});
+  });
+  const csv=rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(',')).join('\n');
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));
+  a.download='courses_'+new Date().toISOString().slice(0,10)+'.csv';a.click();
+}
+
 renderAll();
+
 </script>
+
 
 <!-- TRAVELING GROUP EDIT MODAL -->
 <div class="overlay" id="tgEditOverlay">
