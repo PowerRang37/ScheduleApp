@@ -1,0 +1,2435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>School Schedule Builder 2025-26</title>
+<style>
+:root{
+  --ink:#18181a;--ink2:#44444a;--ink3:#8a8a92;
+  --bg:#f4f4f0;--white:#fff;--rule:#e4e4de;--rule2:#f0f0ea;
+  --blue:#2550d8;--blue2:#eaedff;--blueb:#b8c8f8;
+  --green:#1a8f60;--green2:#e4f7ef;
+  --red:#c83820;--red2:#fff0ec;
+  --amber:#a85800;--amber2:#fff5e0;
+  --yellow:#b07800;--yellow2:#fffbe0;
+  --teal:#0878a0;--teal2:#e0f4ff;
+  --purple:#6030c0;--purple2:#f0eaff;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--ink);font-size:13px;line-height:1.4}
+/* TOP */
+.topbar{background:var(--ink);color:#fff;height:48px;display:flex;align-items:center;padding:0 20px;gap:10px;position:sticky;top:0;z-index:300;flex-wrap:nowrap;overflow:hidden}
+.topbar h1{font-size:13px;font-weight:600;white-space:nowrap;flex-shrink:0}
+.topbar-spacer{flex:1}
+.hbtn{padding:4px 11px;border-radius:5px;border:1px solid rgba(255,255,255,.22);background:transparent;color:#fff;font-size:11px;cursor:pointer;transition:.12s;font-family:inherit;white-space:nowrap;flex-shrink:0}
+.hbtn:hover{background:rgba(255,255,255,.12)}
+.hbtn.pri{background:var(--blue);border-color:var(--blue)}
+/* TABS */
+.schobar{background:#222226;display:flex;padding:0 20px;border-bottom:1px solid #333;overflow-x:auto;flex-shrink:0}
+.stab{padding:8px 16px;font-size:12px;color:rgba(255,255,255,.45);cursor:pointer;border-bottom:2px solid transparent;transition:.12s;white-space:nowrap;font-weight:500;flex-shrink:0}
+.stab:hover{color:rgba(255,255,255,.75)}
+.stab.active{color:#fff;border-bottom-color:var(--blue)}
+.stab .bdg{font-size:9px;padding:1px 5px;border-radius:3px;margin-left:5px;background:rgba(255,255,255,.12);color:rgba(255,255,255,.6);font-weight:600}
+.stab.active .bdg{background:var(--blue);color:#fff}
+/* LAYOUT */
+.layout{display:flex;height:calc(100vh - 80px)}
+/* SIDEBAR */
+.sidebar{width:236px;flex-shrink:0;background:var(--white);border-right:1px solid var(--rule);display:flex;flex-direction:column;overflow:hidden}
+.sb-hd{padding:9px 11px 7px;border-bottom:1px solid var(--rule2);flex-shrink:0}
+.sb-hd h2{font-size:10px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink3);margin-bottom:5px}
+.sb-s{width:100%;border:1px solid var(--rule);border-radius:5px;padding:4px 7px;font-size:12px;outline:none;background:var(--bg);font-family:inherit}
+.sb-s:focus{border-color:var(--blue)}
+.tlist{flex:1;overflow-y:auto;padding:4px}
+.tc{padding:6px 8px;border-radius:6px;cursor:pointer;margin-bottom:2px;border:1px solid transparent}
+.tc:hover{background:var(--bg)}
+.tc.sel{background:var(--blue2);border-color:var(--blueb)}
+.tn{font-size:12px;font-weight:600}
+.tr{font-size:10px;color:var(--ink3);margin:1px 0 3px}
+.ppr{display:flex;gap:2px;flex-wrap:wrap}
+.pp{font-size:9px;padding:1px 4px;border-radius:3px;font-weight:700;font-family:monospace}
+.pp-free{background:var(--green2);color:var(--green)}
+.pp-busy{background:var(--rule2);color:var(--ink3)}
+.pp-ms{background:var(--blue2);color:var(--blue)}
+.pp-ele{background:var(--teal2);color:var(--teal)}
+.pp-sec{background:var(--purple2);color:var(--purple)}
+.stag{display:inline-block;font-size:9px;padding:1px 5px;border-radius:3px;margin:1px 1px 0 0}
+/* MAIN */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.toolbar{background:var(--white);border-bottom:1px solid var(--rule);padding:6px 14px;display:flex;align-items:center;gap:7px;flex-shrink:0;flex-wrap:wrap}
+.tblbl{font-size:11px;color:var(--ink3)}
+.tbsel{border:1px solid var(--rule);border-radius:5px;padding:4px 7px;font-size:12px;background:var(--bg);outline:none;font-family:inherit;cursor:pointer}
+.tbsel:focus{border-color:var(--blue)}
+.tsep{width:1px;height:18px;background:var(--rule);flex-shrink:0}
+.tbtn{padding:4px 10px;border-radius:5px;border:1px solid var(--rule);background:var(--bg);font-size:12px;cursor:pointer;color:var(--ink2);font-family:inherit}
+.tbtn:hover{background:var(--rule2)}
+.tbtn.red{color:var(--red);border-color:#f0c0b8;background:#fff8f6}
+.legend{display:flex;gap:8px;margin-left:auto;align-items:center;flex-shrink:0}
+.legit{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--ink3)}
+.legdot{width:9px;height:9px;border-radius:2px}
+.grid-wrap{flex:1;overflow:auto;padding:14px 16px}
+/* ENROLL BAR */
+.enroll-bar{background:var(--white);border:1px solid var(--rule);border-radius:8px;padding:10px 14px;margin-bottom:14px;display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.enr-card{text-align:center;min-width:70px}
+.enr-num{font-size:20px;font-weight:700}
+.enr-lbl{font-size:9px;color:var(--ink3);text-transform:uppercase;letter-spacing:.05em}
+.enr-sub{font-size:10px;color:var(--ink3);margin-top:1px}
+/* GRID */
+.grade-block{margin-bottom:20px}
+.grade-hd{display:flex;align-items:center;gap:8px;margin-bottom:7px}
+.grade-lbl{font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--ink3)}
+.echip{font-size:10px;color:var(--ink3);background:var(--rule2);padding:2px 7px;border-radius:3px}
+.sched-tbl{width:100%;border-collapse:collapse;background:var(--white);border-radius:10px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.05)}
+.sched-tbl th{font-size:11px;font-weight:700;padding:8px 10px;background:#2a2a2e;color:#fff;text-align:left;white-space:nowrap}
+.sched-tbl th.ph{width:86px;text-align:center}
+.sched-tbl td{border:1px solid var(--rule2);padding:0;vertical-align:top}
+.sched-tbl td.plbl{text-align:center;background:var(--bg);font-size:11px;font-weight:700;color:var(--ink3);font-family:monospace;width:86px;vertical-align:middle;padding:4px 5px}
+.sched-tbl td.plbl small{display:block;font-size:9px;font-weight:400;color:#bbb;margin-top:1px}
+.cell{min-height:50px;padding:5px 6px;cursor:pointer;transition:background .08s;position:relative}
+.cell:hover{background:var(--rule2)}
+.cell.filled{background:var(--blue2)}
+.cell.c-red{background:var(--red2)!important}    /* true conflict: cross-class or other school */
+.cell.c-yellow{background:var(--yellow2)!important} /* same-class multi-section (ok but notable) */
+.cell.drag-over{outline:2px dashed var(--blue);background:#dde8ff}
+.ct{font-size:11px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cs{font-size:10px;margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cx{position:absolute;top:3px;right:3px;font-size:14px;color:#ccc;cursor:pointer;line-height:1}
+.cx:hover{color:var(--red)}
+.cempty{font-size:10px;color:#d0d0d0;text-align:center;padding-top:14px}
+/* RIGHT PANEL */
+.rpanel{width:208px;flex-shrink:0;background:var(--white);border-left:1px solid var(--rule);display:flex;flex-direction:column;overflow:hidden}
+.rp-hd{padding:9px 11px 7px;border-bottom:1px solid var(--rule2);font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.08em;color:var(--ink3)}
+.rp-body{flex:1;overflow-y:auto;padding:10px 11px}
+.rp-sec{margin-bottom:11px}
+.rp-sec h3{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--ink3);margin-bottom:5px}
+.rp-row{display:flex;justify-content:space-between;font-size:11px;padding:3px 0;border-bottom:1px solid var(--rule2)}
+.rp-row:last-child{border:none}
+.rv{font-weight:700}.rv.ok{color:var(--green)}.rv.warn{color:var(--red)}.rv.amb{color:var(--amber)}
+.sel-box{background:var(--blue2);border:1px solid var(--blueb);border-radius:7px;padding:8px 10px;margin-bottom:9px}
+.sb-name{font-size:12px;font-weight:700;margin-bottom:1px}
+.sb-room{font-size:10px;color:var(--ink3);margin-bottom:4px}
+/* STATUS */
+.statusbar{background:var(--ink);color:rgba(255,255,255,.55);padding:4px 18px;font-size:11px;display:flex;gap:16px;flex-shrink:0}
+.statusbar strong{color:#fff}
+/* OVERLAY + MODAL */
+.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.42);z-index:500;align-items:center;justify-content:center}
+.overlay.open{display:flex}
+.modal{background:var(--white);border-radius:12px;width:520px;max-height:86vh;display:flex;flex-direction:column;box-shadow:0 14px 50px rgba(0,0,0,.18)}
+.m-hd{padding:12px 16px 9px;border-bottom:1px solid var(--rule);display:flex;align-items:flex-start;gap:8px}
+.m-hd-txt{flex:1}.m-hd h2{font-size:14px;margin-bottom:2px}.m-hd p{font-size:11px;color:var(--ink3)}
+.mx{font-size:20px;color:var(--ink3);cursor:pointer;padding:0 3px;line-height:1;flex-shrink:0}
+.mx:hover{color:var(--red)}
+.m-bd{flex:1;overflow-y:auto;padding:11px 16px}
+.msec{margin-bottom:11px}
+.msec h3{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--ink3);margin-bottom:6px;display:flex;align-items:center;gap:8px}
+.msec h3 span{flex:1}
+.m-ft{padding:9px 16px;border-top:1px solid var(--rule);display:flex;gap:6px;justify-content:flex-end;align-items:center}
+.mbt{padding:6px 14px;border-radius:5px;font-size:12px;cursor:pointer;border:1px solid var(--rule);background:var(--bg);font-family:inherit}
+.mbt:hover{background:var(--rule2)}
+.mbt.pri{background:var(--blue);border-color:var(--blue);color:#fff}
+.mbt.red{background:var(--red2);border-color:#f0a090;color:var(--red)}
+/* TEACHER PICKER */
+.sort-row{display:flex;gap:6px;align-items:center;margin-bottom:8px}
+.sort-btn{padding:3px 9px;border-radius:4px;border:1px solid var(--rule);background:var(--bg);font-size:11px;cursor:pointer;font-family:inherit}
+.sort-btn.active{background:var(--blue2);border-color:var(--blueb);color:var(--blue)}
+.topt{display:flex;align-items:center;gap:8px;padding:5px 8px;border-radius:6px;cursor:pointer;border:1px solid transparent;margin-bottom:2px}
+.topt:hover{background:var(--bg)}
+.topt.chosen{background:var(--blue2);border-color:var(--blueb)}
+.to-n{font-size:12px;font-weight:600;flex:1}
+.to-r{font-size:10px;color:var(--ink3)}
+.to-w{font-size:10px;color:var(--red);margin-left:4px}
+.to-y{font-size:10px;color:var(--amber);margin-left:4px}
+.to-pp{display:flex;gap:2px;flex-shrink:0}
+/* SUBJECT GRID */
+.sopt-grid{display:flex;flex-wrap:wrap;gap:5px}
+.sopt{padding:4px 10px;border-radius:5px;border:1px solid var(--rule);font-size:12px;cursor:pointer;background:var(--bg);font-family:inherit}
+.sopt:hover{border-color:var(--blue);color:var(--blue)}
+.sopt.chosen{background:var(--blue);border-color:var(--blue);color:#fff}
+.new-subj-row{display:flex;gap:6px;margin-top:8px;align-items:center;padding:8px;background:var(--bg);border-radius:6px;border:1px dashed var(--rule)}
+.new-subj-inp{flex:1;border:1px solid var(--rule);border-radius:4px;padding:4px 7px;font-size:12px;font-family:inherit;outline:none}
+.new-subj-inp:focus{border-color:var(--blue)}
+.color-pick{width:28px;height:28px;border:1px solid var(--rule);border-radius:4px;cursor:pointer;padding:2px;background:transparent}
+/* SECTIONS MODAL */
+.sec-grp{margin-bottom:11px}
+.sec-grp label{font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--ink3);display:block;margin-bottom:3px}
+.sec-grp textarea{width:100%;border:1px solid var(--rule);border-radius:5px;padding:5px 7px;font-size:12px;resize:vertical;min-height:46px;font-family:inherit}
+.sec-hint{font-size:10px;color:var(--ink3);margin-top:2px}
+/* IMPORT */
+.imp-zone{border:2px dashed var(--rule);border-radius:8px;padding:24px;text-align:center;cursor:pointer;margin-bottom:10px}
+.imp-zone:hover,.imp-zone.drag{border-color:var(--blue);background:var(--blue2)}
+.imp-zone input[type=file]{display:none}
+.imp-preview{background:var(--bg);border:1px solid var(--rule);border-radius:6px;padding:8px;margin-bottom:10px;max-height:160px;overflow-y:auto}
+.imp-preview table{width:100%;border-collapse:collapse;font-size:11px}
+.imp-preview th{padding:3px 6px;background:#2a2a2e;color:#fff;text-align:left}
+.imp-preview td{padding:3px 6px;border-bottom:1px solid var(--rule2)}
+/* MANAGE TEACHERS */
+.mt-row{display:flex;align-items:center;gap:6px;padding:5px 7px;border-radius:6px;border:1px solid transparent;margin-bottom:2px}
+.mt-row:hover{background:var(--bg)}
+.mt-row.edited{border-color:var(--amber);background:var(--amber2)}
+.mt-row.new-row{border-color:var(--green);background:var(--green2)}
+.mt-inp{border:1px solid var(--rule);border-radius:4px;padding:3px 6px;font-size:11px;font-family:inherit;background:var(--white);outline:none;flex:1}
+.mt-inp:focus{border-color:var(--blue)}
+.mt-inp.sm{flex:0 0 64px}
+.mt-schools{display:flex;gap:2px}
+.mt-sch-btn{padding:2px 5px;border-radius:3px;font-size:9px;font-weight:700;cursor:pointer;border:1px solid var(--rule);background:var(--bg);color:var(--ink3)}
+.mt-sch-btn.on-ms{background:var(--blue2);color:var(--blue);border-color:var(--blueb)}
+.mt-sch-btn.on-sec{background:var(--purple2);color:var(--purple);border-color:#c0b0f0}
+.mt-sch-btn.on-ele{background:var(--teal2);color:var(--teal);border-color:#a0d8f0}
+.mt-del{color:#ccc;cursor:pointer;font-size:15px;padding:0 2px;line-height:1;flex-shrink:0}
+.mt-del:hover{color:var(--red)}
+.mt-subj-row{display:flex;flex-wrap:wrap;gap:3px;padding:4px 7px 7px}
+.mt-add-btn{width:100%;padding:6px;border:1px dashed var(--rule);border-radius:6px;background:transparent;font-size:12px;color:var(--ink3);cursor:pointer;font-family:inherit}
+.mt-add-btn:hover{border-color:var(--green);color:var(--green)}
+/* MANAGE SUBJECTS */
+.subj-row{display:flex;align-items:center;gap:6px;padding:5px 7px;border-radius:6px;border:1px solid transparent;margin-bottom:2px}
+.subj-row:hover{background:var(--bg)}
+.subj-swatch{width:18px;height:18px;border-radius:3px;flex-shrink:0;border:1px solid rgba(0,0,0,.1)}
+/* TEACHER DASHBOARD */
+.tdash{display:none;position:fixed;inset:0;background:var(--white);z-index:400;flex-direction:column}
+.tdash.open{display:flex}
+.td-topbar{background:var(--ink);height:48px;display:flex;align-items:center;padding:0 20px;gap:12px;flex-shrink:0}
+.td-topbar h2{color:#fff;font-size:14px;font-weight:600;flex:1}
+.td-view-btn{padding:5px 13px;border-radius:4px;border:none;background:rgba(255,255,255,.1);color:rgba(255,255,255,.6);font-size:12px;cursor:pointer;font-family:inherit}
+.td-view-btn.active{background:var(--blue);color:#fff}
+.td-toolbar{background:var(--white);border-bottom:1px solid var(--rule);padding:8px 20px;display:flex;gap:10px;align-items:center;flex-shrink:0}
+.td-body{flex:1;overflow:auto;padding:16px 20px}
+.td-block{background:var(--white);border:1px solid var(--rule);border-radius:10px;margin-bottom:12px;overflow:hidden}
+.td-tch-hd{display:flex;align-items:center;gap:10px;padding:9px 13px;background:var(--bg);border-bottom:1px solid var(--rule2)}
+.td-tch-name{font-size:13px;font-weight:700;flex:1}
+.td-tch-room{font-size:11px;color:var(--ink3)}
+.td-load-bar{height:6px;background:var(--rule2);border-radius:3px;overflow:hidden;width:72px}
+.td-load-fill{height:100%;border-radius:3px}
+.td-load-lbl{font-size:10px;color:var(--ink3);white-space:nowrap;min-width:30px;text-align:right}
+.td-pgrid{display:grid;grid-template-columns:repeat(9,1fr);gap:3px;padding:9px 13px}
+.tdc{border-radius:5px;padding:5px 6px;min-height:52px;font-size:10px;position:relative}
+.tdc .pc-p{font-weight:700;font-family:monospace;color:var(--ink3);margin-bottom:2px;font-size:9px}
+.tdc .pc-s{font-weight:600;line-height:1.2;margin-bottom:1px;font-size:10px}
+.tdc .pc-sec{color:var(--ink3);font-size:9px}
+.tdc .td-cx{position:absolute;top:2px;right:3px;font-size:12px;color:rgba(0,0,0,.2);cursor:pointer;line-height:1}
+.tdc .td-cx:hover{color:var(--red)}
+.tdc.tdc-empty{background:var(--rule2);opacity:.4}
+.tdc.tdc-ms{background:var(--blue2)}
+.tdc.tdc-sec{background:var(--purple2)}
+.tdc.tdc-ele{background:var(--teal2)}
+.tdc.tdc-cred{background:var(--red2);border:1px solid #f0a090}
+.tdc.tdc-cyellow{background:var(--yellow2);border:1px solid #e0c060}
+/* conflicts */
+.conf-card{background:var(--red2);border:1px solid #f0a090;border-radius:8px;padding:11px 13px;margin-bottom:8px}
+.conf-card.conf-yellow{background:var(--yellow2);border-color:#e0c060}
+.conf-card h3{font-size:12px;font-weight:700;color:var(--red);margin-bottom:5px}
+.conf-card.conf-yellow h3{color:var(--yellow)}
+.conf-row{font-size:11px;color:var(--ink2);padding:2px 0}
+.no-conf{background:var(--green2);border:1px solid #a0d8b8;border-radius:8px;padding:20px;text-align:center;color:var(--green);font-weight:600}
+/* load table */
+.load-tbl{width:100%;border-collapse:collapse;background:var(--white);border-radius:10px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.05)}
+.load-tbl th{font-size:11px;font-weight:700;padding:8px 11px;background:#2a2a2e;color:#fff;text-align:left}
+.load-tbl td{padding:7px 11px;border-bottom:1px solid var(--rule2);font-size:12px;vertical-align:middle}
+.load-tbl tr:last-child td{border:none}
+.load-tbl tr:hover td{background:var(--bg)}
+.lbar-wrap{display:flex;align-items:center;gap:7px}
+.lbar-bg{height:8px;background:var(--rule2);border-radius:4px;overflow:hidden;flex:1;min-width:60px}
+.lbar-fg{height:100%;border-radius:4px}
+/* SSV */
+.ssv{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:600;align-items:center;justify-content:center}
+.ssv.open{display:flex}
+.ssv-panel{background:var(--white);border-radius:14px;width:640px;max-height:88vh;display:flex;flex-direction:column;box-shadow:0 20px 60px rgba(0,0,0,.2)}
+.ssv-hd{padding:13px 17px 9px;border-bottom:1px solid var(--rule);display:flex;align-items:center;gap:10px}
+.ssv-hd h2{font-size:14px;font-weight:700;flex:1}
+.ssv-sw{padding:10px 17px;border-bottom:1px solid var(--rule2);display:flex;gap:8px;align-items:center}
+.ssv-si{flex:1;border:1px solid var(--rule);border-radius:6px;padding:6px 10px;font-size:13px;outline:none;font-family:inherit}
+.ssv-si:focus{border-color:var(--blue)}
+.ssv-body{flex:1;overflow-y:auto;padding:12px 17px}
+.stu-row{display:flex;align-items:center;gap:7px;padding:5px 9px;border-radius:6px;cursor:pointer;border:1px solid transparent;margin-bottom:2px}
+.stu-row:hover{background:var(--bg)}
+.stu-row.active{background:var(--blue2);border-color:var(--blueb)}
+.ssv-tbl{width:100%;border-collapse:collapse;border-radius:8px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.06)}
+.ssv-tbl th{font-size:11px;font-weight:700;padding:7px 10px;background:#2a2a2e;color:#fff;text-align:left}
+.ssv-tbl td{padding:7px 10px;border-bottom:1px solid var(--rule2);font-size:12px}
+.ssv-tbl tr:last-child td{border:none}
+.ssv-tbl tr:hover td{background:var(--bg)}
+.ssv-subj{display:inline-block;padding:2px 7px;border-radius:4px;font-size:11px;font-weight:600}
+.ssv-empty{text-align:center;padding:28px;color:var(--ink3);font-size:12px}
+/* auto-fill banner */
+.auto-bn{background:var(--purple2);border:1px solid #c0b0f0;border-radius:7px;padding:8px 12px;margin-bottom:12px;align-items:center;gap:8px;flex-wrap:wrap;display:none}
+.auto-bn p{font-size:11px;flex:1}
+::-webkit-scrollbar{width:5px;height:5px}
+::-webkit-scrollbar-thumb{background:#ccc;border-radius:3px}
+
+/* ── TRAVELING GROUPS ────────────────────────────────────────────────────── */
+.ms-subtabs{display:flex;gap:0;border-bottom:1px solid var(--rule);background:var(--white);padding:0 16px;flex-shrink:0}
+.ms-stab{padding:7px 14px;font-size:12px;color:var(--ink3);cursor:pointer;border-bottom:2px solid transparent;font-weight:500}
+.ms-stab:hover{color:var(--ink)}.ms-stab.active{color:var(--blue);border-bottom-color:var(--blue);font-weight:600}
+.tg-wrap{flex:1;overflow:auto;padding:14px 16px}
+.tg-header{display:flex;align-items:center;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.tg-header h2{font-size:13px;font-weight:700;flex:1}
+.tg-age-tabs{display:flex;gap:4px}
+.tg-age-btn{padding:4px 12px;border-radius:5px;border:1px solid var(--rule);background:var(--bg);font-size:12px;cursor:pointer;font-family:inherit}
+.tg-age-btn.active{background:var(--blue);border-color:var(--blue);color:#fff}
+.tg-grid{display:grid;grid-template-columns:200px repeat(10,1fr);gap:2px;min-width:900px}
+.tg-grid-hd{background:#2a2a2e;color:#fff;font-size:10px;font-weight:700;padding:6px 8px;text-align:center;border-radius:3px}
+.tg-grid-hd.lbl{text-align:left;padding-left:10px}
+.tg-group-lbl{background:var(--bg);border:1px solid var(--rule);border-radius:5px;padding:7px 10px;display:flex;flex-direction:column;justify-content:center;cursor:pointer}
+.tg-group-name{font-size:12px;font-weight:700;margin-bottom:2px}
+.tg-group-meta{font-size:10px;color:var(--ink3)}
+.tg-cell{min-height:54px;background:var(--white);border:1px solid var(--rule2);border-radius:4px;cursor:pointer;padding:4px 6px;transition:background .08s;position:relative}
+.tg-cell:hover{background:var(--bg)}.tg-cell.filled{background:var(--blue2)}.tg-cell.conflict{background:var(--red2)!important}
+.tg-cell .ct{font-size:10px;font-weight:600;line-height:1.2;margin-bottom:1px}
+.tg-cell .cs{font-size:9px;color:var(--ink3)}
+.tg-cell .cx{position:absolute;top:2px;right:3px;font-size:12px;color:#ccc;cursor:pointer;line-height:1}
+.tg-cell .cx:hover{color:var(--red)}
+.tg-cell .cempty{font-size:10px;color:#d0d0d0;text-align:center;padding-top:12px}
+.tg-add-group{border:1px dashed var(--rule);border-radius:6px;padding:10px 14px;cursor:pointer;text-align:center;font-size:12px;color:var(--ink3);margin-top:8px;grid-column:1/-1}
+.tg-add-group:hover{border-color:var(--green);color:var(--green);background:var(--green2)}
+.eg-row{display:flex;gap:8px;align-items:center;margin-bottom:8px}
+.eg-lbl{font-size:11px;font-weight:600;color:var(--ink3);min-width:60px}
+.eg-inp{flex:1;border:1px solid var(--rule);border-radius:5px;padding:5px 8px;font-size:12px;font-family:inherit;outline:none}
+.eg-inp:focus{border-color:var(--blue)}
+.success-grid{background:var(--white);border:1px solid var(--rule);border-radius:8px;margin-top:14px;overflow:hidden}
+.success-hd{background:#2a2a2e;color:#fff;padding:8px 14px;font-size:11px;font-weight:700}
+.success-row{display:flex;align-items:center;border-bottom:1px solid var(--rule2);padding:6px 14px;gap:10px}
+.success-row:last-child{border:none}
+.success-sec{font-size:12px;font-weight:600;min-width:80px}
+.success-teacher{font-size:12px;flex:1}
+.success-edit{font-size:11px;color:var(--blue);cursor:pointer;padding:2px 8px;border-radius:3px;border:1px solid var(--blueb);background:var(--blue2)}
+
+
+.sec-subtabs{display:flex;gap:0;border-bottom:1px solid var(--rule);background:var(--white);padding:0 16px;flex-shrink:0}
+.sec-stab{padding:7px 14px;font-size:12px;color:var(--ink3);cursor:pointer;border-bottom:2px solid transparent;font-weight:500}
+.sec-stab:hover{color:var(--ink)}.sec-stab.active{color:var(--blue);border-bottom-color:var(--blue);font-weight:600}
+.cb-wrap{flex:1;overflow:auto;display:flex;flex-direction:column}
+.cb-course-row:hover td{background:var(--bg)!important}
+
+</style>
+</head>
+<body>
+<div class="topbar">
+  <h1>Schedule Builder 2025-26</h1>
+  <div class="topbar-spacer"></div>
+  <button class="hbtn" onclick="showAuto()">Auto-fill</button>
+  <button class="hbtn" onclick="manageSections()">Sections</button>
+  <button class="hbtn" onclick="openImport()">Import Students</button>
+  <button class="hbtn" onclick="openManageTeachers()">Teachers</button>
+  <button class="hbtn" onclick="openManageSubjects()">Subjects</button>
+  <button class="hbtn" onclick="openSSV()">Student View</button>
+  <button class="hbtn" onclick="exportCSV()">Export CSV</button>
+  <button class="hbtn pri" onclick="saveState()">Save</button>
+</div>
+<div class="schobar">
+  <div class="stab active" onclick="switchSchool('ms',this)">Middle School<span class="bdg">135</span></div>
+  <div class="stab" onclick="switchSchool('sec',this)">Secondary<span class="bdg">225</span></div>
+  <div class="stab" onclick="switchSchool('ele',this)">Elementary<span class="bdg">170</span></div>
+  <div class="stab" onclick="openTDash(this)">Teacher Dashboard</div>
+</div>
+<div class="layout">
+  <div class="sidebar">
+    <div class="sb-hd"><h2>Teachers</h2><input class="sb-s" id="tsearch" placeholder="Search..." oninput="renderTeachers()"></div>
+    <div class="tlist" id="tlist"></div>
+  </div>
+  <div class="main">
+    <div class="toolbar">
+      <span class="tblbl">Show:</span>
+      <select class="tbsel" id="groupFilter" onchange="renderAll()"><option value="all">All</option></select>
+      <div class="tsep"></div>
+      <button class="tbtn" onclick="manageSections()">Manage sections</button>
+      <button class="tbtn red" onclick="clearSched()">Clear</button>
+      <div class="legend">
+        <div class="legit"><div class="legdot" style="background:var(--blue2)"></div>Assigned</div>
+        <div class="legit"><div class="legdot" style="background:var(--yellow2)"></div>Same-class multi</div>
+        <div class="legit"><div class="legdot" style="background:var(--red2)"></div>Conflict</div>
+      </div>
+    </div>
+    <div class="sec-subtabs" id="secSubtabs" style="display:none">
+      <div class="sec-stab active" onclick="setSecTab('courses',this)">Course Builder</div>
+      <div class="sec-stab" onclick="setSecTab('grid',this)">Grid View</div>
+    </div>
+    <div class="ms-subtabs" id="msSubtabs" style="display:none">
+      <div class="ms-stab active" onclick="setMsTab('core',this)">Core Schedule</div>
+      <div class="ms-stab" onclick="setMsTab('traveling',this)">Traveling Groups (Specials A+B)</div>
+    </div>
+    <div class="grid-wrap" id="gridWrap">
+      <div class="auto-bn" id="autoBn">
+        <p>Auto-fill assigns available teachers to empty slots based on their subjects.</p>
+        <select class="tbsel" id="autoTarget" style="font-size:11px"></select>
+        <button class="mbt pri" style="font-size:11px" onclick="runAutoFill()">Run</button>
+        <button class="mbt" style="font-size:11px" onclick="document.getElementById('autoBn').style.display='none'">Cancel</button>
+      </div>
+      <div id="schedContent"></div>
+    <div id="cbContent" class="cb-wrap" style="display:none"></div>
+    <div id="tgContent" style="display:none" class="tg-wrap">
+      <div class="tg-header">
+        <h2>Traveling Groups — Specials (Periods A &amp; B)</h2>
+        <div class="tg-age-tabs">
+          <button class="tg-age-btn active" onclick="setTGAge(11,this)">Grade 6 (11yo)</button>
+          <button class="tg-age-btn" onclick="setTGAge(12,this)">Grade 7 (12yo)</button>
+          <button class="tg-age-btn" onclick="setTGAge(13,this)">Grade 8 (13yo)</button>
+        </div>
+        <button class="tbtn" onclick="addTGGroup()">+ New group</button>
+      </div>
+      <div id="tgGrid"></div>
+      <div class="success-grid" id="successGrid"></div>
+    </div>
+    </div>
+    <div class="statusbar" id="statusbar"></div>
+  </div>
+  <div class="rpanel">
+    <div class="rp-hd">Details</div>
+    <div class="rp-body">
+      <div id="rpTeacher"><p style="font-size:11px;color:var(--ink3)">Select a teacher to view their schedule.</p></div>
+      <div class="rp-sec"><h3>Overview</h3><div id="rpStats"></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- ASSIGN MODAL -->
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <div class="m-hd"><div class="m-hd-txt"><h2 id="mTitle">Assign</h2><p id="mSub"></p></div><span class="mx" onclick="closeModal()">×</span></div>
+    <div class="m-bd">
+      <div class="msec">
+        <h3><span>Teacher</span>
+          <button class="sort-btn" id="sortAZ" onclick="setSort('az')" style="font-size:10px;padding:2px 7px">A→Z</button>
+          <button class="sort-btn" id="sortZA" onclick="setSort('za')" style="font-size:10px;padding:2px 7px">Z→A</button>
+          <input class="sb-s" id="mTSearch" placeholder="Filter..." oninput="renderMT()" style="width:110px;padding:3px 7px;font-size:11px">
+        </h3>
+        <div id="mTList"></div>
+      </div>
+      <div class="msec" id="mSubjSec" style="display:none">
+        <h3><span>Subject</span></h3>
+        <div class="sopt-grid" id="mSubjGrid"></div>
+        <div class="new-subj-row">
+          <input class="new-subj-inp" id="newSubjName" placeholder="New subject name...">
+          <input type="color" class="color-pick" id="newSubjColor" value="#e8f0ff" title="Background color">
+          <button class="mbt pri" style="font-size:11px;padding:4px 10px" onclick="createAndSelectSubj()">+ Add</button>
+        </div>
+      </div>
+    </div>
+    <div class="m-ft"><button class="mbt" onclick="closeModal()">Cancel</button><button class="mbt pri" onclick="confirmAssign()">Assign</button></div>
+  </div>
+</div>
+
+<!-- SECTIONS MODAL -->
+<div class="overlay" id="secOverlay">
+  <div class="modal" style="width:400px">
+    <div class="m-hd"><div class="m-hd-txt"><h2>Manage Sections</h2><p id="secSub">One name per line</p></div><span class="mx" onclick="closeOverlay('secOverlay')">×</span></div>
+    <div class="m-bd" id="secBody"></div>
+    <div class="m-ft"><button class="mbt pri" onclick="saveSections()">Save</button></div>
+  </div>
+</div>
+
+<!-- IMPORT MODAL -->
+<div class="overlay" id="importOverlay">
+  <div class="modal" style="width:540px">
+    <div class="m-hd"><div class="m-hd-txt"><h2>Import Students</h2><p>Class, Student ID, Name, Sex, Age, Status</p></div><span class="mx" onclick="closeOverlay('importOverlay')">×</span></div>
+    <div class="m-bd">
+      <div class="imp-zone" id="impZone" onclick="document.getElementById('impFile').click()" ondragover="event.preventDefault();this.classList.add('drag')" ondragleave="this.classList.remove('drag')" ondrop="impDrop(event)">
+        <input type="file" id="impFile" accept=".csv" onchange="impLoad(this.files[0])">
+        <div style="font-size:24px;margin-bottom:6px">📋</div>
+        <div style="font-size:13px;font-weight:600;margin-bottom:3px">Click or drag CSV file here</div>
+        <div style="font-size:11px;color:var(--ink3)">Standard QSI enrollment export</div>
+      </div>
+      <div id="impPreview" style="display:none">
+        <div style="font-size:11px;color:var(--ink3);margin-bottom:6px" id="impStat"></div>
+        <div class="imp-preview"><table id="impTable"></table></div>
+      </div>
+      <label style="display:flex;align-items:center;gap:8px;font-size:12px;cursor:pointer;padding:6px 0">
+        <input type="checkbox" id="impReplace" checked style="accent-color:var(--red)">
+        <span style="color:var(--red);font-weight:600">Replace all existing students</span>
+        <span style="color:var(--ink3);font-size:11px">— use at start of each school year</span>
+      </label>
+    </div>
+    <div class="m-ft"><button class="mbt" onclick="closeOverlay('importOverlay')">Cancel</button><button class="mbt pri" id="impBtn" disabled onclick="confirmImport()">Apply</button></div>
+  </div>
+</div>
+
+<!-- MANAGE TEACHERS MODAL -->
+<div class="overlay" id="teacherOverlay">
+  <div class="modal" style="width:620px">
+    <div class="m-hd"><div class="m-hd-txt"><h2>Manage Teachers</h2><p>Name, room, schools, subjects</p></div><span class="mx" onclick="closeOverlay('teacherOverlay')">×</span></div>
+    <div class="m-bd">
+      <div style="display:flex;gap:8px;margin-bottom:8px">
+        <input class="sb-s" id="mtSearch" placeholder="Search..." oninput="renderMTList()" style="flex:1">
+        <select class="tbsel" id="mtSchFilter" onchange="renderMTList()" style="font-size:11px">
+          <option value="all">All</option><option value="ms">MS</option><option value="sec">Secondary</option><option value="ele">Elementary</option>
+        </select>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 60px 80px auto;gap:3px;padding:3px 7px;font-size:9px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.06em">
+        <span>Name</span><span>Room</span><span>Schools</span><span></span>
+      </div>
+      <div style="max-height:280px;overflow-y:auto;margin-bottom:8px" id="mtList"></div>
+      <button class="mt-add-btn" onclick="addNewTeacher()">+ Add new teacher</button>
+    </div>
+    <div class="m-ft">
+      <div style="flex:1;font-size:11px;color:var(--ink3)" id="mtStatus"></div>
+      <button class="mbt" onclick="closeOverlay('teacherOverlay')">Cancel</button>
+      <button class="mbt pri" onclick="saveTeachers()">Save</button>
+    </div>
+  </div>
+</div>
+
+<!-- MANAGE SUBJECTS MODAL -->
+<div class="overlay" id="subjOverlay">
+  <div class="modal" style="width:420px">
+    <div class="m-hd"><div class="m-hd-txt"><h2>Manage Subjects</h2><p>Custom subjects are available across all schools</p></div><span class="mx" onclick="closeOverlay('subjOverlay')">×</span></div>
+    <div class="m-bd">
+      <div style="font-size:11px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px">Built-in + Custom Subjects</div>
+      <div id="subjList" style="max-height:320px;overflow-y:auto;margin-bottom:10px"></div>
+      <div class="new-subj-row">
+        <input class="new-subj-inp" id="globalSubjName" placeholder="New subject name...">
+        <input type="color" class="color-pick" id="globalSubjColor" value="#e8f0ff">
+        <button class="mbt pri" style="font-size:11px;padding:4px 10px" onclick="createGlobalSubj()">+ Add</button>
+      </div>
+    </div>
+    <div class="m-ft"><button class="mbt pri" onclick="closeOverlay('subjOverlay')">Done</button></div>
+  </div>
+</div>
+
+<!-- TEACHER DASHBOARD -->
+<div class="tdash" id="tdash">
+  <div class="td-topbar">
+    <h2>Teacher Dashboard</h2>
+    <div style="display:flex;gap:2px;background:rgba(255,255,255,.1);border-radius:6px;padding:2px">
+      <button class="td-view-btn active" onclick="setTDView('weekly',this)">Weekly View</button>
+      <button class="td-view-btn" onclick="setTDView('conflicts',this)">Conflicts</button>
+      <button class="td-view-btn" onclick="setTDView('load',this)">Load Factor</button>
+    </div>
+    <button class="hbtn" onclick="closeTDash()" style="margin-left:8px">← Back</button>
+  </div>
+  <div class="td-toolbar">
+    <input class="sb-s" id="tdSearch" placeholder="Search teacher..." oninput="renderTDash()" style="width:180px">
+    <select class="tbsel" id="tdSchool" onchange="renderTDash()" style="font-size:11px">
+      <option value="all">All schools</option><option value="ms">MS</option><option value="sec">Secondary</option><option value="ele">Elementary</option>
+    </select>
+    <span style="font-size:11px;color:var(--ink3)" id="tdSummary"></span>
+  </div>
+  <div class="td-body" id="tdBody"></div>
+</div>
+
+<!-- STUDENT VIEW -->
+<div class="ssv" id="ssvWrap">
+  <div class="ssv-panel">
+    <div class="ssv-hd">
+      <h2>Student Schedule Viewer</h2>
+      <button class="mbt" onclick="printSSV()">Print</button>
+      <span class="mx" onclick="closeOverlay('ssvWrap')">×</span>
+    </div>
+    <div class="ssv-sw">
+      <input class="ssv-si" id="ssvQ" placeholder="Search student by name..." oninput="ssvSearch()">
+      <select class="tbsel" id="ssvSch" onchange="ssvSearch()" style="font-size:11px">
+        <option value="all">All</option><option value="ms">MS</option><option value="sec">Secondary</option><option value="ele">Elementary</option>
+      </select>
+    </div>
+    <div class="ssv-body" id="ssvBody"><div class="ssv-empty">Search for a student above</div></div>
+  </div>
+</div>
+
+<script>
+
+// ══ CONSTANTS ═════════════════════════════════════════════════════════════════
+const PERIODS = ['A','B','C','D','E','F','F2','G','H'];
+const PT = {A:'8:00-8:45',B:'8:45-9:30',C:'9:47-10:32',D:'10:34-11:19',E:'11:21-12:06',F:'12:08-12:53',F2:'12:55-1:40',G:'1:57-2:42',H:'2:44-3:29'};
+
+// ══ BUILT-IN SUBJECTS ════════════════════════════════════════════════════════
+const BUILTIN_SUBJECTS = [
+  // MS
+  {id:'rla',name:'RLA / Literature',col:'#fce8ef',tc:'#8a1040',schools:['ms']},
+  {id:'ie',name:'IE English',col:'#e8eeff',tc:'#2820b0',schools:['ms']},
+  {id:'math',name:'Mathematics',col:'#e8f0ff',tc:'#183898',schools:['ms']},
+  {id:'science',name:'Science',col:'#e8fff4',tc:'#0a6838',schools:['ms']},
+  {id:'cultural',name:'Cultural Studies',col:'#f5e8ff',tc:'#5a1090',schools:['ms']},
+  {id:'kazakh',name:'Kazakh Language',col:'#fffbe0',tc:'#6a5000',schools:['ms','sec','ele']},
+  {id:'russian',name:'Russian Language',col:'#ffe8f0',tc:'#880838',schools:['ms','sec','ele']},
+  {id:'spanish',name:'Spanish Language',col:'#fff0e0',tc:'#803810',schools:['ms','sec']},
+  {id:'french',name:'French Language',col:'#ffeef8',tc:'#780858',schools:['ms','sec']},
+  {id:'kazhist',name:'Kazakh History',col:'#eef4ff',tc:'#183880',schools:['ms']},
+  {id:'art',name:'Art',col:'#fff8e0',tc:'#705800',schools:['ms','sec','ele']},
+  {id:'music',name:'Music',col:'#fde8ff',tc:'#680888',schools:['ms','sec','ele']},
+  {id:'pe',name:'Physical Education',col:'#e8fffc',tc:'#085850',schools:['ms','sec','ele']},
+  {id:'ss',name:'Study Skills / Advisory',col:'#f0f8ff',tc:'#084870',schools:['ms']},
+  {id:'tech',name:'Technology',col:'#f0f0ee',tc:'#303030',schools:['ms','sec','ele']},
+  // SEC
+  {id:'lit1',name:'Lit/Writing I',col:'#fce8ef',tc:'#8a1040',schools:['sec']},
+  {id:'lit2',name:'Lit/Writing II',col:'#f8d8e8',tc:'#8a1040',schools:['sec']},
+  {id:'aplit',name:'AP Literature/Lang',col:'#f4c8dc',tc:'#8a1040',schools:['sec']},
+  {id:'ie_s',name:'IE / Transition Eng',col:'#e8eeff',tc:'#2820b0',schools:['sec']},
+  {id:'math_s',name:'Algebra / Geometry',col:'#e8f0ff',tc:'#183898',schools:['sec']},
+  {id:'precalc',name:'Pre-Calculus',col:'#dde8ff',tc:'#183898',schools:['sec']},
+  {id:'calc',name:'AP Calculus',col:'#d0e0ff',tc:'#183898',schools:['sec']},
+  {id:'bio',name:'Biology',col:'#e8fff4',tc:'#0a6838',schools:['sec']},
+  {id:'chem',name:'Chemistry',col:'#dcfff0',tc:'#0a6838',schools:['sec']},
+  {id:'phys',name:'Physics',col:'#d0ffec',tc:'#0a6838',schools:['sec']},
+  {id:'hist_s',name:'History / Social Studies',col:'#f5e8ff',tc:'#5a1090',schools:['sec']},
+  {id:'kaz_s',name:'Kazakh Language Sec',col:'#fffbe0',tc:'#6a5000',schools:['sec']},
+  {id:'kazhist_s',name:'Kazakh History Sec',col:'#eef4ff',tc:'#183880',schools:['sec']},
+  {id:'rus_s',name:'Russian Language Sec',col:'#ffe8f0',tc:'#880838',schools:['sec']},
+  {id:'spa_s',name:'Spanish Language Sec',col:'#fff0e0',tc:'#803810',schools:['sec']},
+  {id:'fre_s',name:'French Language Sec',col:'#ffeef8',tc:'#780858',schools:['sec']},
+  {id:'art_s',name:'Art Sec',col:'#fff8e0',tc:'#705800',schools:['sec']},
+  {id:'music_s',name:'Music Sec',col:'#fde8ff',tc:'#680888',schools:['sec']},
+  {id:'pe_s',name:'Physical Education Sec',col:'#e8fffc',tc:'#085850',schools:['sec']},
+  {id:'tech_s',name:'Technology Sec',col:'#f0f0ee',tc:'#303030',schools:['sec']},
+  {id:'econ',name:'Economics',col:'#fff5e8',tc:'#804010',schools:['sec']},
+  {id:'sr',name:'Senior Research / AP Sem',col:'#f0f8f0',tc:'#205020',schools:['sec']},
+  // ELE
+  {id:'la',name:'Literacy / Language Arts',col:'#fce8ef',tc:'#8a1040',schools:['ele']},
+  {id:'math_e',name:'Mathematics',col:'#e8f0ff',tc:'#183898',schools:['ele']},
+  {id:'reading',name:'Reading',col:'#ffe8f8',tc:'#780858',schools:['ele']},
+  {id:'writing',name:'Writing',col:'#fff0e8',tc:'#803818',schools:['ele']},
+  {id:'cs_e',name:'Class Meeting / C/S',col:'#f5e8ff',tc:'#5a1090',schools:['ele']},
+  {id:'lur',name:'Lunch / Recess',col:'#e8fff4',tc:'#0a6838',schools:['ele']},
+  {id:'art_e',name:'Art',col:'#fff8e0',tc:'#705800',schools:['ele']},
+  {id:'music_e',name:'Music',col:'#fde8ff',tc:'#680888',schools:['ele']},
+  {id:'pe_e',name:'Physical Education',col:'#e8fffc',tc:'#085850',schools:['ele']},
+  {id:'lib',name:'Library',col:'#e8f4ff',tc:'#184878',schools:['ele']},
+  {id:'tech_e',name:'Technology',col:'#f0f0ee',tc:'#303030',schools:['ele']},
+  {id:'so_e',name:'Social Studies',col:'#fff5e0',tc:'#705810',schools:['ele']},
+  {id:'sn',name:'Snack / Advisory',col:'#f8f8f4',tc:'#484840',schools:['ele']},
+  {id:'ie_e',name:'IE English',col:'#e8eeff',tc:'#2820b0',schools:['ele']},
+  {id:'spec',name:'Specials Block',col:'#f0eeff',tc:'#5830b0',schools:['ele']},
+];
+
+// Custom subjects (loaded from state)
+let CUSTOM_SUBJECTS = [];
+const allSubjects = () => [...BUILTIN_SUBJECTS, ...CUSTOM_SUBJECTS];
+const sById = id => allSubjects().find(s => s.id === id);
+function subjForSchool(sc) {
+  return allSubjects().filter(s => !s.schools || s.schools.includes(sc) || s.schools.includes('all'));
+}
+
+// ══ TEACHERS ════════════════════════════════════════════════════════════════
+// ex:{} is removed - instead existing schedules are stored as real sched entries
+// in a special group '__ex__' per school
+let TEACHERS = [
+  {id:'organ_j',name:'Organ, Jeff',room:'505',schools:['ms'],subj:['rla','cultural']},
+  {id:'haines_r',name:'Haines, Rob',room:'501',schools:['ms'],subj:['rla','science','ss']},
+  {id:'nininger_s',name:'Nininger, Sandra',room:'102',schools:['ms','sec'],subj:['rla','ie_s']},
+  {id:'clifton_t',name:'Clifton, Tom',room:'136',schools:['ms','sec'],subj:['rla','lit1']},
+  {id:'york_s',name:'York, Stacy',room:'503',schools:['ms'],subj:['math','ss']},
+  {id:'nahish_d',name:'Nahishakiye, Dieudonne',room:'108',schools:['ms'],subj:['math']},
+  {id:'johnston_c',name:'Johnston, Craig',room:'512',schools:['ms'],subj:['math']},
+  {id:'samayeva_a',name:'Samayeva, Anar',room:'621',schools:['ms','sec'],subj:['math','math_s']},
+  {id:'bawden_t',name:'Bawden, Tim',room:'506',schools:['ms'],subj:['science','tech']},
+  {id:'record_s',name:'Record, Scott',room:'303',schools:['ms'],subj:['science']},
+  {id:'montoya_z',name:'Montoya, Zach',room:'Y3',schools:['ms'],subj:['cultural']},
+  {id:'koek_s',name:'Koekeomer, Strauss',room:'Y1',schools:['ms'],subj:['cultural','ss']},
+  {id:'paizova_a',name:'Paizova, Altynai',room:'502',schools:['ms','sec'],subj:['kazakh','kaz_s']},
+  {id:'zakenova_b',name:'Zakenova, Bakhytzhan',room:'525',schools:['ms','sec'],subj:['kazakh','kaz_s']},
+  {id:'akhmetova_a',name:'Akhmetova, Anzhela',room:'529',schools:['ms','sec'],subj:['russian','rus_s']},
+  {id:'lukyanova_t',name:'Lukyanova, Tatyana',room:'522',schools:['ms','sec'],subj:['russian','rus_s']},
+  {id:'moisseyeva',name:'Moisseyeva, Olessya',room:'528',schools:['ms','sec'],subj:['russian','rus_s']},
+  {id:'perozo_c',name:'Perozo, Ciro',room:'137',schools:['ms','sec'],subj:['spanish','spa_s']},
+  {id:'sole_m',name:'Sole, Marilen',room:'122',schools:['ms','sec'],subj:['spanish','spa_s']},
+  {id:'madkenova',name:'Madkenova/Tokhtakhunova',room:'117',schools:['ms','sec'],subj:['french','fre_s']},
+  {id:'zubkova_l',name:'Zubkova, Larissa',room:'138',schools:['ms','sec'],subj:['french','fre_s']},
+  {id:'yevlakhina',name:'Yevlakhina, Tatyana',room:'120',schools:['ms','sec'],subj:['kazhist','kazhist_s']},
+  {id:'zhumanov_t',name:'Zhumanov, Timur',room:'107',schools:['ms','sec'],subj:['kazhist','kazhist_s']},
+  {id:'perozo_m',name:'Perozo, Marcia',room:'134',schools:['ms','sec'],subj:['art','art_s']},
+  {id:'kottman_c',name:'Kottman, Christopher',room:'703',schools:['ms','ele'],subj:['music','music_e']},
+  {id:'stegal_j',name:'Stegal, Jonathon',room:'701',schools:['ms','ele','sec'],subj:['music','music_e','music_s']},
+  {id:'tutunik_a',name:'Tutunik, Andrei',room:'Big Gym',schools:['ms','sec'],subj:['pe','pe_s']},
+  {id:'moss_j',name:'Moss, Jim',room:'111',schools:['ms','sec'],subj:['tech','tech_s']},
+  {id:'amireyeva',name:'Amireyeva, Madina',room:'307',schools:['ms'],subj:['ie']},
+  {id:'tynalieva',name:'Tynalieva, Aizhan',room:'305',schools:['ms','sec'],subj:['ie','ie_s']},
+  {id:'rozbitskaya',name:'Rozbitskaya, Rita',room:'625',schools:['ms','ele','sec'],subj:['ie','ie_s','ie_e']},
+  {id:'vdovenko_v',name:'Vdovenko, Vadim',room:'623',schools:['ms','ele','sec'],subj:['ie','ie_s','ie_e']},
+  // SEC only
+  {id:'moore_j',name:'Moore, Jason',room:'101',schools:['sec'],subj:['tech_s']},
+  {id:'herndon_s',name:'Herndon, Sarah',room:'114',schools:['sec'],subj:['lit1']},
+  {id:'laker_j',name:'Laker, John',room:'124',schools:['sec'],subj:['lit2','hist_s']},
+  {id:'layne_b',name:'Layne, Bonnie',room:'103',schools:['sec'],subj:['lit2','aplit']},
+  {id:'varney_j',name:'Varney, Jeff',room:'112',schools:['sec'],subj:['aplit','lit2']},
+  {id:'dekker_t',name:'Dekker, Tracey',room:'304',schools:['sec'],subj:['calc','precalc','math_s']},
+  {id:'dixon_n',name:'Dixon, Neill',room:'306',schools:['sec','ms'],subj:['math_s','math']},
+  {id:'smith_j',name:'Smith, Johannes',room:'116',schools:['sec'],subj:['math_s','precalc']},
+  {id:'crane_r',name:'Crane, Robert',room:'106',schools:['sec'],subj:['bio','phys']},
+  {id:'koek_c',name:'Koekeomer, Carmen',room:'204',schools:['sec'],subj:['bio']},
+  {id:'pomytkina',name:'Pomytkina, Polina',room:'203',schools:['sec'],subj:['chem','bio']},
+  {id:'smith_b',name:'Smith, Brendon',room:'110',schools:['sec'],subj:['hist_s']},
+  {id:'yurovsky',name:'Yurovsky, Gretchen',room:'Y2',schools:['sec'],subj:['hist_s']},
+  {id:'fleming_i',name:'Fleming, Ian',room:'105',schools:['sec'],subj:['hist_s','econ']},
+  {id:'ibragimova',name:'Ibragimova, Dina',room:'118',schools:['sec'],subj:['kaz_s']},
+  {id:'karazh',name:'Karazhigitova, Madina',room:'627',schools:['sec','ele'],subj:['ie_s','ie_e']},
+  {id:'herndon_m',name:'Herndon, Mike',room:'Wellness',schools:['sec'],subj:['pe_s']},
+  {id:'fleming_k',name:'Fleming, Kerrie',room:'104',schools:['sec'],subj:['sr']},
+  // ELE classroom teachers
+  {id:'rakhee',name:'Rakhee Bhattacharya',room:'410',schools:['ele'],subj:['la','math_e','reading','writing','cs_e','sn'],classId:'3RB'},
+  {id:'assel',name:'Assel Aliyeva',room:'408',schools:['ele'],subj:['la','math_e','reading','writing','cs_e','sn'],classId:'4AA'},
+  {id:'libby',name:'Libby Green',room:'406',schools:['ele'],subj:['la','math_e','reading','writing','cs_e','sn'],classId:'5LG'},
+  {id:'courtney',name:'Courtney Way',room:'630',schools:['ele'],subj:['la','math_e','reading','writing','cs_e','sn'],classId:'6CW'},
+  {id:'carol',name:'Carol Record',room:'632',schools:['ele'],subj:['la','math_e','reading','writing','cs_e','sn'],classId:'6CR'},
+  {id:'debbie',name:'Debbie Johnston',room:'605',schools:['ele'],subj:['la','math_e','reading','writing','cs_e','sn'],classId:'7DJ'},
+  {id:'sarah',name:'Sarah Bawden',room:'603',schools:['ele'],subj:['la','math_e','reading','writing','cs_e','sn'],classId:'7SB'},
+  {id:'mike_c',name:'Mike Curry',room:'631',schools:['ele'],subj:['la','math_e','reading','writing','cs_e','sn'],classId:'8MC'},
+  {id:'charmaine',name:'Charmaine Marchman',room:'634',schools:['ele'],subj:['la','math_e','reading','writing','cs_e','sn'],classId:'8CM'},
+  {id:'james_k',name:'James Keeghan',room:'602',schools:['ele'],subj:['la','math_e','reading','writing','cs_e','sn'],classId:'9JK'},
+  {id:'katie_h',name:'Katie Hannifin',room:'606',schools:['ele'],subj:['la','math_e','reading','writing','cs_e','sn'],classId:'9KH'},
+  {id:'peter_j',name:'Peter Jackson',room:'633',schools:['ele'],subj:['la','math_e','reading','writing','cs_e','sn'],classId:'10PJ'},
+  {id:'gordon_m',name:'Gordon Marchman',room:'636',schools:['ele'],subj:['la','math_e','reading','writing','cs_e','sn'],classId:'10GM'},
+  // ELE specials
+  {id:'merey',name:'Merey (Art)',room:'Art Rm',schools:['ele'],subj:['art_e']},
+  {id:'janet_mu',name:'Janet (Music)',room:'707',schools:['ele'],subj:['music_e']},
+  {id:'yelena',name:'Yelena (Tech)',room:'605',schools:['ele'],subj:['tech_e']},
+  {id:'kim_lib',name:'Kim (Library)',room:'Library',schools:['ele'],subj:['lib']},
+  {id:'yadira',name:'Yadira (Library)',room:'Library',schools:['ele'],subj:['lib']},
+  {id:'koba',name:'Koba (PE)',room:'Sm Gym',schools:['ele'],subj:['pe_e']},
+  {id:'sultan',name:'Sultan (PE)',room:'Sm Gym',schools:['ms','ele'],subj:['pe','pe_e']},
+  {id:'damir',name:'Damir (PE)',room:'Sm Gym',schools:['ele'],subj:['pe_e']},
+];
+const TMAP = {};
+TEACHERS.forEach(t => TMAP[t.id] = t);
+const tById = id => TMAP[id];
+
+// ══ GROUPS ══════════════════════════════════════════════════════════════════
+// Elementary restructured: 8 age groups, sections = homeroom initials
+const GROUPS = {
+  ms: [
+    {id:'ms11',lbl:'Grade 6 (11yo)',badge:'G6',bg:'#e8eeff',students:38},
+    {id:'ms12',lbl:'Grade 7 (12yo)',badge:'G7',bg:'#e8fff4',students:42},
+    {id:'ms13',lbl:'Grade 8 (13yo)',badge:'G8',bg:'#fff5e0',students:55},
+  ],
+  sec: [
+    {id:'s1',lbl:'S1 — Grade 9 (14yo)',badge:'S1',bg:'#f5e8ff',students:62},
+    {id:'s2',lbl:'S2 — Grade 10 (15yo)',badge:'S2',bg:'#fce8ef',students:51},
+    {id:'s3',lbl:'S3 — Grade 11 (16yo)',badge:'S3',bg:'#e8f4ff',students:51},
+    {id:'s4',lbl:'S4 — Grade 12 (17yo)',badge:'S4',bg:'#fff8e0',students:61},
+  ],
+  ele: [
+    {id:'e3',lbl:'Age 3',badge:'3yo',bg:'#fce8ef',students:5},
+    {id:'e4',lbl:'Age 4',badge:'4yo',bg:'#ffe8f0',students:9},
+    {id:'e5',lbl:'Age 5',badge:'5yo',bg:'#fff0e0',students:12},
+    {id:'e6',lbl:'Age 6',badge:'6yo',bg:'#fff8e0',students:16},
+    {id:'e7',lbl:'Age 7',badge:'7yo',bg:'#e8fff4',students:22},
+    {id:'e8',lbl:'Age 8',badge:'8yo',bg:'#e8f4ff',students:31},
+    {id:'e9',lbl:'Age 9',badge:'9yo',bg:'#eef0ff',students:38},
+    {id:'e10',lbl:'Age 10',badge:'10yo',bg:'#f5e8ff',students:37},
+  ]
+};
+
+// Existing schedule data converted to real schedule entries (in '__ex__' pseudo-section)
+// Format: {school: {groupId: {sectionId: {period: {teacherId, subjectId, label}}}}}
+// We store these as normal sched entries so they're editable
+const EXISTING_SCHED = {
+  ms: {
+    ms11:{'__ex__':{
+      C:{teacherId:'organ_j',subjectId:'cultural',label:'Cultural 12'},
+      D:{teacherId:'york_s',subjectId:'math',label:'Math 11'},E:{teacherId:'york_s',subjectId:'math',label:'Math 11'},G:{teacherId:'york_s',subjectId:'math',label:'Math 11'},
+    }},
+    ms12:{'__ex__':{
+      C:{teacherId:'nahish_d',subjectId:'math',label:'Math 12'},E:{teacherId:'nahish_d',subjectId:'math',label:'Math 12'},G:{teacherId:'johnston_c',subjectId:'math',label:'Math 12'},
+    }},
+    ms13:{'__ex__':{
+      B:{teacherId:'haines_r',subjectId:'ss',label:'SS 13'},C:{teacherId:'haines_r',subjectId:'rla',label:'RLA 13'},D:{teacherId:'haines_r',subjectId:'rla',label:'RLA 13'},E:{teacherId:'haines_r',subjectId:'rla',label:'RLA 13'},G:{teacherId:'haines_r',subjectId:'science',label:'Sci 13'},
+    }},
+  },
+  sec: {
+    s1:{'__ex__':{
+      A:{teacherId:'nininger_s',subjectId:'ie_s',label:'Trans Eng'},B:{teacherId:'nininger_s',subjectId:'ie_s',label:'Trans Eng'},
+      F:{teacherId:'herndon_s',subjectId:'lit1',label:'LW I'},G:{teacherId:'herndon_s',subjectId:'lit1',label:'LW I'},H:{teacherId:'herndon_s',subjectId:'lit1',label:'LW I'},
+    }},
+    s2:{'__ex__':{
+      A:{teacherId:'dekker_t',subjectId:'calc',label:'AP Calc'},B:{teacherId:'dekker_t',subjectId:'calc',label:'AP Calc'},
+      A:{teacherId:'crane_r',subjectId:'bio',label:'Bio'},B:{teacherId:'crane_r',subjectId:'bio',label:'Bio'},F:{teacherId:'crane_r',subjectId:'bio',label:'Bio'},
+    }},
+    s3:{'__ex__':{
+      A:{teacherId:'smith_b',subjectId:'hist_s',label:'AP HG'},B:{teacherId:'smith_b',subjectId:'hist_s',label:'AP HG'},
+      C:{teacherId:'yurovsky',subjectId:'hist_s',label:'AP World'},
+    }},
+    s4:{'__ex__':{
+      A:{teacherId:'fleming_i',subjectId:'econ',label:'Econ S1'},B:{teacherId:'fleming_i',subjectId:'econ',label:'AP Econ'},
+      A:{teacherId:'fleming_k',subjectId:'sr',label:'AP Sem'},
+    }},
+  },
+  ele: {}
+};
+
+// ══ STATE ════════════════════════════════════════════════════════════════════
+const blankSched = grps => { const o={}; grps.forEach(g=>{o[g.id]={}}); return o; };
+
+let state = loadState() || {
+  ms:  {sections:{ms11:['G6-A','G6-B'],ms12:['G7-A','G7-B'],ms13:['G8-A','G8-B','G8-C']},  sched:blankSched(GROUPS.ms)},
+  sec: {sections:{s1:['S1-A','S1-B','S1-C'],s2:['S2-A','S2-B','S2-C'],s3:['S3-A','S3-B','S3-C'],s4:['S4-A','S4-B','S4-C']}, sched:blankSched(GROUPS.sec)},
+  ele: {sections:{e3:['RB'],e4:['AA'],e5:['LG'],e6:['CW','CR'],e7:['DJ','SB'],e8:['MC','CM'],e9:['JK','KH'],e10:['PJ','GM']}, sched:blankSched(GROUPS.ele)},
+  students: [],
+  customSubjects: [],
+};
+
+// Load custom subjects from state
+CUSTOM_SUBJECTS = (state.customSubjects || []);
+
+// Merge EXISTING_SCHED into state if sections not yet populated
+// (only on first load — after that user controls it)
+function initExistingSched() {
+  ['ms','sec','ele'].forEach(sc => {
+    Object.entries(EXISTING_SCHED[sc] || {}).forEach(([grpId, secData]) => {
+      if (!state[sc].sched[grpId]) state[sc].sched[grpId] = {};
+      Object.entries(secData).forEach(([secId, periods]) => {
+        if (!state[sc].sched[grpId][secId]) {
+          state[sc].sched[grpId][secId] = {};
+          // Only populate if section doesn't exist yet
+          Object.assign(state[sc].sched[grpId][secId], periods);
+        }
+      });
+      // Add __ex__ to sections list if not there
+      if (!state[sc].sections[grpId]) state[sc].sections[grpId] = [];
+      if (!state[sc].sections[grpId].includes('__ex__')) {
+        state[sc].sections[grpId].push('__ex__');
+      }
+    });
+  });
+}
+if (!localStorage.getItem('school_sched_v5')) initExistingSched();
+
+// ══ HELPERS ══════════════════════════════════════════════════════════════════
+let school = 'ms';
+let selT = null, mCell = null, mT = null, mS = null, mSort = 'az';
+
+const cur = () => state[school];
+const curG = () => GROUPS[school];
+const curT = () => TEACHERS.filter(t => t.schools.includes(school));
+
+function getCell(g,s,p) { return (cur().sched[g]?.[s]||{})[p]; }
+function setCell(g,s,p,v) {
+  if (!cur().sched[g]) cur().sched[g] = {};
+  if (!cur().sched[g][s]) cur().sched[g][s] = {};
+  if (v === null) delete cur().sched[g][s][p];
+  else cur().sched[g][s][p] = v;
+}
+
+// Get ALL assignments for a teacher across all schools/groups/sections/periods
+function getTchAll(tid) {
+  const result = [];
+  ['ms','sec','ele'].forEach(sc => {
+    Object.entries(state[sc].sched||{}).forEach(([grpId, gSched]) => {
+      Object.entries(gSched||{}).forEach(([secId, sSched]) => {
+        PERIODS.forEach(p => {
+          if (sSched[p]?.teacherId === tid)
+            result.push({sc, grpId, secId, period:p, subjId:sSched[p].subjectId, label:sSched[p].label});
+        });
+      });
+    });
+  });
+  return result;
+}
+
+// Conflict type detection for a specific cell
+// Returns: 'none' | 'same-class' (yellow) | 'conflict' (red)
+function conflictType(grpId, secId, period, teacherId) {
+  const assignments = getTchAll(teacherId).filter(a => a.period === period);
+  if (assignments.length <= 1) return 'none';
+  // Check: are all conflicts within the same group?
+  const otherGrps = assignments.filter(a => !(a.grpId === grpId && a.secId === secId));
+  if (otherGrps.every(a => a.grpId === grpId)) return 'same-class'; // all same group = yellow
+  return 'conflict'; // different groups or schools = red
+}
+
+// ══ SORT ─────────────────────────────────────────────────────────────────────
+function setSort(dir) {
+  mSort = dir;
+  document.getElementById('sortAZ').classList.toggle('active', dir==='az');
+  document.getElementById('sortZA').classList.toggle('active', dir==='za');
+  renderMT();
+}
+
+// ══ SIDEBAR ══════════════════════════════════════════════════════════════════
+function renderTeachers() {
+  const q = document.getElementById('tsearch').value.toLowerCase();
+  const teachers = curT().filter(t => !q || t.name.toLowerCase().includes(q));
+  document.getElementById('tlist').innerHTML = teachers.map(t => {
+    const asgns = getTchAll(t.id);
+    const busyP = new Set(asgns.map(a=>a.period));
+    const pills = PERIODS.map(p => {
+      const a = asgns.find(x=>x.period===p);
+      const cls = a ? (a.sc==='ms'?'pp-ms':a.sc==='sec'?'pp-sec':'pp-ele') : 'pp-free';
+      return `<span class="pp ${cls}">${p}</span>`;
+    }).join('');
+    const tags = (t.subj||[]).slice(0,2).map(id=>{const s=sById(id);return s?`<span class="stag" style="background:${s.col};color:${s.tc}">${s.name}</span>`:''}).join('');
+    return `<div class="tc ${selT===t.id?'sel':''}" onclick="selTch('${t.id}')">
+      <div class="tn">${t.name}</div><div class="tr">Room ${t.room}</div>
+      <div style="margin-bottom:3px">${tags}</div>
+      <div class="ppr">${pills}</div>
+    </div>`;
+  }).join('');
+}
+
+function selTch(id) { selT = selT===id ? null : id; renderTeachers(); renderRP(); }
+
+// ══ RIGHT PANEL ══════════════════════════════════════════════════════════════
+function renderRP() {
+  const el = document.getElementById('rpTeacher');
+  if (!selT) { el.innerHTML='<p style="font-size:11px;color:var(--ink3)">Select a teacher.</p>'; return; }
+  const t = tById(selT);
+  const asgns = getTchAll(t.id);
+  const rows = PERIODS.map(p => {
+    const a = asgns.filter(x=>x.period===p);
+    const lbl = a.length ? a.map(x=>{const sc=x.sc.toUpperCase();const s=sById(x.subjId);return `${sc}:${s?.name||x.subjId} (${x.secId})`}).join(', ') : '';
+    const cls = a.length?( a[0].sc==='ms'?'pp-ms':a[0].sc==='sec'?'pp-sec':'pp-ele'):'pp-free';
+    return `<div style="display:flex;align-items:center;justify-content:space-between;font-size:10px;padding:3px 0;border-bottom:1px solid var(--rule2)">
+      <span class="pp ${cls}">${p}</span>
+      <span style="color:var(--ink3);flex:1;margin-left:5px;text-align:right;font-size:9px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${lbl}</span>
+    </div>`;
+  }).join('');
+  const tags = (t.subj||[]).map(id=>{const s=sById(id);return s?`<span class="stag" style="background:${s.col};color:${s.tc}">${s.name}</span>`:''}).join('');
+  el.innerHTML = `<div class="sel-box"><div class="sb-name">${t.name}</div><div class="sb-room">Room ${t.room}</div><div>${tags}</div></div>
+    <div class="rp-sec"><h3>Periods</h3>${rows}</div>`;
+}
+
+// ══ SCHEDULE GRID ═════════════════════════════════════════════════════════════
+function renderSchedule() {
+  const gf = document.getElementById('groupFilter').value;
+  const groups = curG().filter(g => gf==='all'||g.id===gf);
+  const total = groups.reduce((s,g)=>s+g.students,0);
+  const totalSecs = groups.reduce((s,g)=>s+(cur().sections[g.id]||[]).filter(s=>s!=='__ex__').length,0);
+
+  const enrHtml = '<div class="enroll-bar">' +
+    groups.map(g => {
+      const secs = (cur().sections[g.id]||[]).filter(s=>s!=='__ex__').length;
+      const ps = secs ? Math.round(g.students/secs) : 0;
+      const over = ps>24, under = ps>0&&ps<12;
+      return `<div class="enr-card"><div class="enr-num" style="color:${over?'var(--red)':under?'var(--amber)':'var(--ink)'}">${g.students}</div><div class="enr-lbl">${g.badge}</div><div class="enr-sub">${secs} sec ~${ps}/sec</div></div>`;
+    }).join('') +
+    `<div class="enr-card" style="border-left:1px solid var(--rule);padding-left:12px;margin-left:4px"><div class="enr-num">${total}</div><div class="enr-lbl">Total</div><div class="enr-sub">${totalSecs} sections</div></div>` +
+  '</div>';
+
+  const gridHtml = groups.map(grp => {
+    const allSecs = cur().sections[grp.id] || [];
+    const secs = allSecs.filter(s=>s!=='__ex__');
+    const hasEx = allSecs.includes('__ex__');
+    const displaySecs = [...secs, ...(hasEx?['Existing']:[])]
+      .map(s => ({id:s==='Existing'?'__ex__':s, label:s}));
+
+    if (!displaySecs.length) return `<div class="grade-block"><div class="grade-hd"><span class="echip">${grp.lbl}</span></div><p style="font-size:11px;color:var(--ink3)">No sections. Use Manage sections.</p></div>`;
+
+    const secSize = secs.length ? Math.round(grp.students/secs.length) : 0;
+    const over = secSize > 24;
+    const hdr = `<th class="ph">Period / Time</th>` + displaySecs.map(s =>
+      s.id==='__ex__'
+        ? `<th style="background:#3a3a40;font-style:italic">${s.label} <span style="opacity:.5;font-size:9px">(editable)</span></th>`
+        : `<th>${s.label} <span style="font-size:9px;font-weight:400;opacity:.5">(~${secSize}${over?'⚠':''})</span></th>`
+    ).join('');
+
+    const rows = PERIODS.map(p => {
+      const cells = displaySecs.map(sec => {
+        const cell = getCell(grp.id, sec.id, p);
+        const ct = cell ? conflictType(grp.id, sec.id, p, cell.teacherId) : 'none';
+        const cellCls = cell ? (ct==='conflict'?'c-red':ct==='same-class'?'c-yellow':'filled') : '';
+        const isEx = sec.id === '__ex__';
+        let inner;
+        if (cell) {
+          const t = tById(cell.teacherId);
+          const s = sById(cell.subjectId);
+          const nm = t ? t.name.split(',')[0] : cell.teacherId;
+          const subName = s ? s.name : (cell.label || cell.subjectId);
+          const subTc = s ? s.tc : 'var(--ink3)';
+          inner = `<div class="ct">${nm}</div><div class="cs" style="color:${subTc}">${subName}</div>
+            <span class="cx" onclick="removeCell('${grp.id}','${sec.id}','${p}',event)">×</span>`;
+        } else {
+          inner = `<div class="cempty">+</div>`;
+        }
+        const bg = isEx ? 'background:#fafafa' : '';
+        return `<td><div class="cell ${cellCls}" style="${bg}" onclick="openModal('${grp.id}','${sec.id}','${p}')"
+          ondragover="event.preventDefault();this.classList.add('drag-over')"
+          ondragleave="this.classList.remove('drag-over')"
+          ondrop="onDrop(event,'${grp.id}','${sec.id}','${p}');this.classList.remove('drag-over')">${inner}</div></td>`;
+      }).join('');
+      return `<tr><td class="plbl">${p}<small>${PT[p]}</small></td>${cells}</tr>`;
+    }).join('');
+
+    return `<div class="grade-block">
+      <div class="grade-hd">
+        <span style="background:${grp.bg};padding:2px 7px;border-radius:3px;font-size:10px;font-weight:700">${grp.badge}</span>
+        <span class="grade-lbl">${grp.lbl}</span>
+        <span class="echip">${grp.students} students · ${secs.length} sections · ~${secSize}/sec${over?' ⚠ over':''}</span>
+      </div>
+      <table class="sched-tbl"><thead><tr>${hdr}</tr></thead><tbody>${rows}</tbody></table>
+    </div>`;
+  }).join('');
+
+  document.getElementById('schedContent').innerHTML = enrHtml + gridHtml;
+}
+
+function renderStats() {
+  const gf = document.getElementById('groupFilter').value;
+  const groups = curG().filter(g => gf==='all'||g.id===gf);
+  let total=0,filled=0,conflicts=0,sameClass=0;
+  groups.forEach(g => (cur().sections[g.id]||[]).forEach(sec => {
+    PERIODS.forEach(p => {
+      total++;
+      const c = getCell(g.id,sec,p);
+      if (c) {
+        filled++;
+        const ct = conflictType(g.id,sec,p,c.teacherId);
+        if (ct==='conflict') conflicts++;
+        if (ct==='same-class') sameClass++;
+      }
+    });
+  }));
+  document.getElementById('statusbar').innerHTML =
+    `<span><strong>${total}</strong> slots</span><span><strong>${filled}</strong> filled</span>` +
+    `<span style="color:${total-filled>0?'#ffa880':'#80e0a0'}"><strong>${total-filled}</strong> empty</span>` +
+    `<span style="color:${sameClass>0?'#e0b820':'#80e0a0'}"><strong>${sameClass}</strong> same-class multi</span>` +
+    `<span style="color:${conflicts>0?'#ff9880':'#80e0a0'}"><strong>${conflicts}</strong> conflicts</span>`;
+  document.getElementById('rpStats').innerHTML = [
+    ['Slots',total,''],['Filled',filled,filled===total?'ok':filled>total*.5?'amb':'warn'],
+    ['Empty',total-filled,total-filled===0?'ok':'amb'],
+    ['Same-class',sameClass,sameClass===0?'ok':'amb'],
+    ['Conflicts',conflicts,conflicts===0?'ok':'warn'],
+  ].map(([l,v,c])=>`<div class="rp-row"><span>${l}</span><span class="rv ${c}">${v}</span></div>`).join('');
+}
+
+function updateFilter() {
+  const sel = document.getElementById('groupFilter');
+  const cur_v = sel.value;
+  const opts = ['all', ...curG().map(g=>g.id)];
+  sel.innerHTML = opts.map(id => {
+    const g = curG().find(x=>x.id===id);
+    return `<option value="${id}">${id==='all'?'All':(g?.lbl||id)}</option>`;
+  }).join('');
+  if (opts.includes(cur_v)) sel.value = cur_v;
+}
+
+// ══ ASSIGN MODAL ══════════════════════════════════════════════════════════════
+function openModal(grp, sec, p) {
+  mCell = {grp,sec,p};
+  const ex = getCell(grp,sec,p);
+  mT = ex?.teacherId||null; mS = ex?.subjectId||null;
+  document.getElementById('mTitle').textContent = `Period ${p} — ${sec==='__ex__'?'Existing':sec}`;
+  document.getElementById('mSub').textContent = `${curG().find(g=>g.id===grp)?.lbl||grp} · ${PT[p]}`;
+  document.getElementById('mTSearch').value = '';
+  setSort(mSort);
+  renderMT();
+  if (mT) renderMS(mT);
+  document.getElementById('overlay').classList.add('open');
+}
+
+function renderMT() {
+  const q = document.getElementById('mTSearch').value.toLowerCase();
+  let teachers = curT().filter(t => !q || t.name.toLowerCase().includes(q));
+  if (mSort==='az') teachers.sort((a,b)=>a.name.localeCompare(b.name));
+  else teachers.sort((a,b)=>b.name.localeCompare(a.name));
+
+  document.getElementById('mTList').innerHTML = teachers.map(t => {
+    const asgns = getTchAll(t.id);
+    const busyThisPeriod = asgns.filter(a => a.period===mCell.p && !(a.grpId===mCell.grp && a.secId===mCell.sec));
+    let warnHtml = '';
+    if (busyThisPeriod.length) {
+      const sameGrp = busyThisPeriod.every(a => a.grpId===mCell.grp);
+      warnHtml = sameGrp
+        ? `<span class="to-y">◐ same-class P${mCell.p}</span>`
+        : `<span class="to-w">⚠ conflict P${mCell.p}</span>`;
+    }
+    const pills = PERIODS.map(p => {
+      const a = asgns.filter(x=>x.period===p);
+      const busy = a.length > 0 && !(a.length===1 && a[0].grpId===mCell.grp && a[0].secId===mCell.sec);
+      const isThis = p===mCell.p;
+      const aThis = a.some(x=>x.grpId===mCell.grp&&x.secId===mCell.sec);
+      let bg = '#eee', tc = '#888';
+      if (isThis && !busy) { bg='#c0f0d8'; tc='#1a8f60'; }
+      else if (isThis && busy) { bg='#ffd0c0'; tc='#c83820'; }
+      else if (a.some(x=>x.sc==='ms')) { bg='var(--blue2)'; tc='var(--blue)'; }
+      else if (a.some(x=>x.sc==='sec')) { bg='var(--purple2)'; tc='var(--purple)'; }
+      else if (a.some(x=>x.sc==='ele')) { bg='var(--teal2)'; tc='var(--teal)'; }
+      return `<span style="font-size:9px;font-family:monospace;font-weight:700;padding:2px 3px;border-radius:2px;background:${bg};color:${tc}">${p}</span>`;
+    }).join('');
+    return `<div class="topt ${mT===t.id?'chosen':''}" onclick="chooseTch('${t.id}')">
+      <div style="flex:1"><div class="to-n">${t.name}${warnHtml}</div><div class="to-r">Room ${t.room}</div></div>
+      <div class="to-pp">${pills}</div>
+    </div>`;
+  }).join('');
+}
+
+function chooseTch(id) { mT=id; mS=null; renderMT(); renderMS(id); }
+
+function renderMS(tid) {
+  const t = tById(tid);
+  document.getElementById('mSubjSec').style.display = 'block';
+  const avail = subjForSchool(school).filter(s => (t?.subj||[]).includes(s.id));
+  const list = avail.length ? avail : subjForSchool(school);
+  document.getElementById('mSubjGrid').innerHTML = list.map(s =>
+    `<button class="sopt ${mS===s.id?'chosen':''}" onclick="chooseSubj('${s.id}')"
+      style="${mS===s.id?'':`background:${s.col};color:${s.tc};border-color:${s.col}`}">${s.name}</button>`
+  ).join('');
+}
+
+function chooseSubj(sid) {
+  mS = sid;
+  document.querySelectorAll('.sopt').forEach(el => {
+    const s = sById(sid); if (!s) return;
+    const ch = el.textContent.trim() === s.name;
+    el.classList.toggle('chosen', ch);
+    el.style.background = ch?'':s.col; el.style.color = ch?'':s.tc; el.style.borderColor = ch?'':s.col;
+  });
+}
+
+function createAndSelectSubj() {
+  const name = document.getElementById('newSubjName').value.trim();
+  if (!name) return;
+  const col = document.getElementById('newSubjColor').value;
+  const id = 'custom_' + name.toLowerCase().replace(/[^a-z0-9]/g,'_') + '_' + Date.now();
+  // Make text color from background
+  const tc = '#333';
+  const subj = {id, name, col, tc, schools:['ms','sec','ele'], custom:true};
+  CUSTOM_SUBJECTS.push(subj);
+  state.customSubjects = CUSTOM_SUBJECTS;
+  document.getElementById('newSubjName').value = '';
+  mS = id;
+  if (mT) renderMS(mT);
+}
+
+function confirmAssign() {
+  if (!mT || !mS) { alert('Choose a teacher and subject.'); return; }
+  setCell(mCell.grp, mCell.sec, mCell.p, {teacherId:mT, subjectId:mS});
+  closeModal(); renderAll();
+}
+function closeModal() { document.getElementById('overlay').classList.remove('open'); mCell=mT=mS=null; }
+function removeCell(g,s,p,e) { e.stopPropagation(); setCell(g,s,p,null); renderAll(); }
+function onDrop(e,g,s,p) { e.preventDefault(); if(selT) openModal(g,s,p); }
+
+// ══ SCHOOL SWITCH ═════════════════════════════════════════════════════════════
+// switchSchool overridden by TG module below
+
+// ══ SECTIONS ══════════════════════════════════════════════════════════════════
+function manageSections() {
+  document.getElementById('secSub').textContent = school.toUpperCase() + ' — one section per line';
+  document.getElementById('secBody').innerHTML = curG().map(g => {
+    const secs = (cur().sections[g.id]||[]).filter(s=>s!=='__ex__');
+    return `<div class="sec-grp">
+      <label>${g.lbl} <span style="font-size:10px;font-weight:400;color:var(--ink3)">(${g.students} students)</span></label>
+      <textarea id="sg_${g.id}">${secs.join('\n')}</textarea>
+      <div class="sec-hint">~${secs.length?Math.round(g.students/Math.max(1,secs.length)):0} per section</div>
+    </div>`;
+  }).join('');
+  document.getElementById('secOverlay').classList.add('open');
+}
+
+function saveSections() {
+  curG().forEach(g => {
+    const ta = document.getElementById('sg_'+g.id); if (!ta) return;
+    const vals = ta.value.split('\n').map(s=>s.trim()).filter(Boolean);
+    const hasEx = (cur().sections[g.id]||[]).includes('__ex__');
+    cur().sections[g.id] = [...vals, ...(hasEx?['__ex__']:[])];
+    if (!cur().sched[g.id]) cur().sched[g.id] = {};
+  });
+  closeOverlay('secOverlay'); renderAll();
+}
+
+// ══ SUBJECTS MANAGER ══════════════════════════════════════════════════════════
+function openManageSubjects() {
+  renderSubjList();
+  document.getElementById('subjOverlay').classList.add('open');
+}
+function renderSubjList() {
+  const all = allSubjects();
+  document.getElementById('subjList').innerHTML = all.map(s => `
+    <div class="subj-row">
+      <div class="subj-swatch" style="background:${s.col}"></div>
+      <span style="flex:1;font-size:12px">${s.name}</span>
+      <span style="font-size:10px;color:var(--ink3)">${(s.schools||[]).join(', ')}</span>
+      ${s.custom ? `<span style="font-size:12px;color:#ccc;cursor:pointer;padding:0 4px" onclick="deleteSubj('${s.id}')">×</span>` : ''}
+    </div>`).join('');
+}
+function createGlobalSubj() {
+  const name = document.getElementById('globalSubjName').value.trim(); if (!name) return;
+  const col = document.getElementById('globalSubjColor').value;
+  const id = 'custom_' + name.toLowerCase().replace(/[^a-z0-9]/g,'_') + '_' + Date.now();
+  CUSTOM_SUBJECTS.push({id, name, col, tc:'#333', schools:['ms','sec','ele'], custom:true});
+  state.customSubjects = CUSTOM_SUBJECTS;
+  document.getElementById('globalSubjName').value = '';
+  renderSubjList();
+}
+function deleteSubj(id) {
+  CUSTOM_SUBJECTS = CUSTOM_SUBJECTS.filter(s=>s.id!==id);
+  state.customSubjects = CUSTOM_SUBJECTS;
+  renderSubjList();
+}
+
+// ══ MANAGE TEACHERS ════════════════════════════════════════════════════════════
+let _mtEdits = [];
+function openManageTeachers() {
+  _mtEdits = TEACHERS.map(t => ({...t, subj:[...t.subj], schools:[...t.schools], _state:'clean'}));
+  document.getElementById('mtSearch').value = '';
+  document.getElementById('mtSchFilter').value = 'all';
+  renderMTList();
+  document.getElementById('teacherOverlay').classList.add('open');
+}
+function renderMTList() {
+  const q = document.getElementById('mtSearch').value.toLowerCase();
+  const sf = document.getElementById('mtSchFilter').value;
+  const visible = _mtEdits.filter(t =>
+    t._state !== 'deleted' &&
+    (!q || t.name.toLowerCase().includes(q)) &&
+    (sf==='all' || t.schools.includes(sf))
+  );
+  document.getElementById('mtList').innerHTML = visible.map(t => {
+    const ri = _mtEdits.indexOf(t);
+    const sbtns = ['ms','sec','ele'].map(sc => {
+      const on = t.schools.includes(sc);
+      return `<button class="mt-sch-btn ${on?'on-'+sc:''}" onclick="toggleTSch(${ri},'${sc}')">${sc}</button>`;
+    }).join('');
+    const subjTags = allSubjects().filter(s=>(t.subj||[]).includes(s.id))
+      .map(s=>`<span class="stag" style="background:${s.col};color:${s.tc};cursor:pointer" onclick="removeSubjFromT(${ri},'${s.id}')" title="Remove">${s.name} ×</span>`).join('');
+    // Subject add dropdown
+    const availSubj = allSubjects().filter(s => !(t.subj||[]).includes(s.id));
+    const subjDd = `<select class="tbsel" style="font-size:10px;padding:2px 5px" onchange="addSubjToT(${ri},this.value);this.value=''">
+      <option value="">+ Add subject...</option>
+      ${availSubj.map(s=>`<option value="${s.id}">${s.name}</option>`).join('')}
+    </select>`;
+    return `<div class="mt-row ${t._state==='new'?'new-row':t._state==='edited'?'edited':''}" id="mtr-${ri}">
+      <input class="mt-inp" value="${t.name}" onchange="editT(${ri},'name',this.value)" placeholder="Name">
+      <input class="mt-inp sm" value="${t.room}" onchange="editT(${ri},'room',this.value)" placeholder="Room">
+      <div class="mt-schools">${sbtns}</div>
+      <span class="mt-del" onclick="deleteTeacher(${ri})">×</span>
+    </div>
+    <div class="mt-subj-row">${subjTags}${subjDd}</div>`;
+  }).join('');
+  const total = _mtEdits.filter(t=>t._state!=='deleted').length;
+  const changed = _mtEdits.filter(t=>t._state==='edited'||t._state==='new'||t._state==='deleted').length;
+  document.getElementById('mtStatus').textContent = `${total} teachers${changed?' · '+changed+' unsaved':''}`; 
+}
+function editT(ri, field, val) { _mtEdits[ri][field]=val; if(_mtEdits[ri]._state==='clean')_mtEdits[ri]._state='edited'; renderMTList(); }
+function toggleTSch(ri, sc) {
+  const t = _mtEdits[ri];
+  const idx = t.schools.indexOf(sc);
+  if (idx>=0) t.schools.splice(idx,1); else t.schools.push(sc);
+  if (t._state==='clean') t._state='edited';
+  renderMTList();
+}
+function addSubjToT(ri, sid) {
+  if (!sid) return;
+  if (!_mtEdits[ri].subj.includes(sid)) _mtEdits[ri].subj.push(sid);
+  if (_mtEdits[ri]._state==='clean') _mtEdits[ri]._state='edited';
+  renderMTList();
+}
+function removeSubjFromT(ri, sid) {
+  _mtEdits[ri].subj = _mtEdits[ri].subj.filter(s=>s!==sid);
+  if (_mtEdits[ri]._state==='clean') _mtEdits[ri]._state='edited';
+  renderMTList();
+}
+function deleteTeacher(ri) {
+  if (!confirm('Remove "'+_mtEdits[ri].name+'"?')) return;
+  _mtEdits[ri]._state = 'deleted'; renderMTList();
+}
+function addNewTeacher() {
+  _mtEdits.push({id:'new_'+Date.now(),name:'New Teacher',room:'',schools:['ms'],subj:[],_state:'new'});
+  renderMTList();
+  setTimeout(()=>{ const l=document.getElementById('mtList'); l.scrollTop=l.scrollHeight; },50);
+}
+function saveTeachers() {
+  const active = _mtEdits.filter(t=>t._state!=='deleted');
+  TEACHERS.length=0;
+  active.forEach(t=>{ const {_state,...clean}=t; TEACHERS.push(clean); TMAP[clean.id]=clean; });
+  Object.keys(TMAP).forEach(k=>{ if(!TEACHERS.find(t=>t.id===k)) delete TMAP[k]; });
+  closeOverlay('teacherOverlay'); renderAll();
+}
+
+// ══ IMPORT STUDENTS ════════════════════════════════════════════════════════════
+let _impParsed = null;
+function openImport() { _impParsed=null; document.getElementById('impBtn').disabled=true; document.getElementById('impPreview').style.display='none'; document.getElementById('importOverlay').classList.add('open'); }
+function impDrop(e) { e.preventDefault(); document.getElementById('impZone').classList.remove('drag'); const f=e.dataTransfer.files[0]; if(f)impLoad(f); }
+function impLoad(file) {
+  const r = new FileReader();
+  r.onload = e => parseImp(e.target.result);
+  r.readAsText(file);
+}
+function parseImp(text) {
+  const lines = text.trim().split('\n');
+  const header = lines[0].split(',').map(h=>h.trim().replace(/^"|"$/g,''));
+  const students = [];
+  lines.slice(1).forEach(line => {
+    const vals=[]; let cur='',inq=false;
+    for(const ch of line){if(ch==='"')inq=!inq;else if(ch===','&&!inq){vals.push(cur);cur='';}else cur+=ch;}
+    vals.push(cur);
+    const row={}; header.forEach((h,i)=>row[h]=(vals[i]||'').trim());
+    if(!row.Name||!row.Class)return;
+    const status=(row.Status||'').toLowerCase();
+    if(status&&status!=='enrolled'&&status!=='')return;
+    students.push({id:row['Student ID']||(row.Name+row.Class),name:row.Name,cls:Number(row.Class),sex:row.Sex||'',nationality:row.Nationality||'',homeroom:clsToHomeroom(Number(row.Class)),status:row.Status||'Enrolled'});
+  });
+  _impParsed=students;
+  const ms=students.filter(s=>s.cls>=11&&s.cls<=13).length;
+  const sec=students.filter(s=>s.cls>=14&&s.cls<=17).length;
+  const ele=students.filter(s=>s.cls>=3&&s.cls<=10).length;
+  document.getElementById('impStat').innerHTML=`<strong>${students.length}</strong> students — MS: <strong>${ms}</strong>, Sec: <strong>${sec}</strong>, Ele: <strong>${ele}</strong>`;
+  document.getElementById('impTable').innerHTML='<tr><th>Class</th><th>Name</th><th>ID</th><th>Sex</th><th>Status</th></tr>'+students.slice(0,25).map(s=>`<tr><td>${s.cls}</td><td>${s.name}</td><td style="font-family:monospace;font-size:10px">${s.id}</td><td>${s.sex}</td><td>${s.status}</td></tr>`).join('')+(students.length>25?`<tr><td colspan="5" style="color:var(--ink3);text-align:center">...+${students.length-25} more</td></tr>`:'');
+  document.getElementById('impPreview').style.display='block';
+  document.getElementById('impBtn').disabled=false;
+}
+function clsToHomeroom(cls) { return {3:'3RB',4:'4AA',5:'5LG',6:'6CW',7:'7DJ',8:'8MC',9:'9JK',10:'10PJ'}[cls]||String(cls); }
+function confirmImport() {
+  if(!_impParsed)return;
+  const replace = document.getElementById('impReplace').checked;
+  if(replace) state.students=_impParsed; else { const m={}; (state.students||[]).forEach(s=>m[s.id]=s); _impParsed.forEach(s=>m[s.id]=s); state.students=Object.values(m); }
+  const counts={}; state.students.forEach(s=>counts[s.cls]=(counts[s.cls]||0)+1);
+  const clsToGrp={11:'ms11',12:'ms12',13:'ms13',14:'s1',15:'s2',16:'s3',17:'s4'};
+  Object.entries(clsToGrp).forEach(([cls,gid])=>{ const g=[...GROUPS.ms,...GROUPS.sec].find(x=>x.id===gid); if(g&&counts[cls])g.students=counts[cls]; });
+  document.querySelectorAll('.stab .bdg')[0].textContent=GROUPS.ms.reduce((s,g)=>s+g.students,0);
+  document.querySelectorAll('.stab .bdg')[1].textContent=GROUPS.sec.reduce((s,g)=>s+g.students,0);
+  document.querySelectorAll('.stab .bdg')[2].textContent=GROUPS.ele.reduce((s,g)=>s+g.students,0);
+  closeOverlay('importOverlay'); renderAll();
+  alert('Imported '+state.students.length+' students.');
+}
+
+// ══ AUTO-FILL ══════════════════════════════════════════════════════════════════
+function showAuto() {
+  document.getElementById('autoTarget').innerHTML=curG().map(g=>`<option value="${g.id}">${g.lbl}</option>`).join('');
+  document.getElementById('autoBn').style.display='flex';
+}
+function runAutoFill() {
+  const target = document.getElementById('autoTarget').value;
+  const secs = (cur().sections[target]||[]).filter(s=>s!=='__ex__');
+  const order = school==='ms'?['ss','rla','ie','math','science','cultural','kazakh','russian','spanish','french','kazhist','art','music','pe','tech']:school==='sec'?['lit1','lit2','aplit','ie_s','math_s','precalc','calc','bio','chem','phys','hist_s','kaz_s','kazhist_s','rus_s','spa_s','fre_s','art_s','music_s','pe_s','tech_s','econ','sr']:['la','math_e','reading','writing','cs_e','pe_e','art_e','music_e','lib','tech_e','so_e','sn','ie_e'];
+  secs.forEach(sec => {
+    order.forEach(subjId => {
+      if(PERIODS.some(p=>{const c=getCell(target,sec,p);return c&&c.subjectId===subjId;}))return;
+      for(const p of PERIODS) {
+        if(getCell(target,sec,p))continue;
+        const t=curT().find(t=>(t.subj||[]).includes(subjId)&&!getTchAll(t.id).some(a=>a.period===p&&!(a.grpId===target&&a.secId===sec)));
+        if(t){setCell(target,sec,p,{teacherId:t.id,subjectId:subjId});break;}
+      }
+    });
+  });
+  document.getElementById('autoBn').style.display='none'; renderAll();
+}
+
+// ══ TEACHER DASHBOARD ══════════════════════════════════════════════════════════
+let _tdView = 'weekly';
+function openTDash(tab) {
+  document.querySelectorAll('.stab').forEach(t=>t.classList.remove('active')); tab.classList.add('active');
+  document.getElementById('tdash').classList.add('open'); renderTDash();
+}
+function closeTDash() {
+  document.getElementById('tdash').classList.remove('open');
+  document.querySelectorAll('.stab').forEach((t,i)=>{if(i===0)t.classList.add('active');});
+}
+function setTDView(v,btn) { _tdView=v; document.querySelectorAll('.td-view-btn').forEach(b=>b.classList.remove('active')); btn.classList.add('active'); renderTDash(); }
+function renderTDash() {
+  const q=(document.getElementById('tdSearch')?.value||'').toLowerCase();
+  const sc=document.getElementById('tdSchool')?.value||'all';
+  const teachers=TEACHERS.filter(t=>(!q||t.name.toLowerCase().includes(q))&&(sc==='all'||t.schools.includes(sc)));
+  const body=document.getElementById('tdBody'); if(!body)return;
+  if(_tdView==='weekly')tdWeekly(teachers,body);
+  else if(_tdView==='conflicts')tdConflicts(teachers,body);
+  else tdLoad(teachers,body);
+}
+function tdWeekly(teachers, body) {
+  document.getElementById('tdSummary').textContent=teachers.length+' teachers';
+  body.innerHTML=teachers.map(t=>{
+    const asgns=getTchAll(t.id);
+    const pct=Math.round(asgns.length/PERIODS.length*100);
+    const barC=pct>88?'var(--red)':pct>66?'var(--amber)':'var(--green)';
+    const scTags=t.schools.map(sc=>`<span style="background:${sc==='ms'?'var(--blue2)':sc==='sec'?'var(--purple2)':'var(--teal2)'};color:${sc==='ms'?'var(--blue)':sc==='sec'?'var(--purple)':'var(--teal)'};padding:1px 6px;border-radius:3px;font-size:9px;font-weight:700">${sc.toUpperCase()}</span>`).join('');
+    const cells=PERIODS.map(p=>{
+      const pa=asgns.filter(a=>a.period===p);
+      if(pa.length>1){
+        const allSameGrp=pa.every(a=>a.grpId===pa[0].grpId);
+        return `<div class="tdc ${allSameGrp?'tdc-cyellow':'tdc-cred'}"><div class="pc-p">${p}</div><div class="pc-s">${allSameGrp?'◐ Multi-sec':'⚠ CONFLICT'}</div><div class="pc-sec">${pa.map(a=>a.secId).join('/')}</div></div>`;
+      }
+      if(pa.length===1){
+        const a=pa[0];const s=sById(a.subjId);
+        return `<div class="tdc tdc-${a.sc}"><div class="pc-p">${p}</div><div class="pc-s">${s?.name||a.subjId}</div><div class="pc-sec">${a.secId}</div>
+          <span class="td-cx" onclick="tdRemoveCell('${a.sc}','${a.grpId}','${a.secId}','${p}')">×</span></div>`;
+      }
+      return `<div class="tdc tdc-empty"><div class="pc-p">${p}</div></div>`;
+    }).join('');
+    return `<div class="td-block"><div class="td-tch-hd"><div class="td-tch-name">${t.name}</div><div class="td-tch-room">Rm ${t.room}</div><div class="td-sch-tags" style="display:flex;gap:3px">${scTags}</div><div class="td-load-bar"><div class="td-load-fill" style="width:${pct}%;background:${barC}"></div></div><div class="td-load-lbl">${asgns.length}/${PERIODS.length}</div></div><div class="td-pgrid">${cells}</div></div>`;
+  }).join('')||'<div style="text-align:center;padding:32px;color:var(--ink3)">No teachers match filter</div>';
+}
+function tdRemoveCell(sc, grpId, secId, p) {
+  if(!state[sc].sched[grpId]?.[secId]) return;
+  delete state[sc].sched[grpId][secId][p];
+  renderTDash(); renderAll();
+}
+function tdConflicts(teachers, body) {
+  const conflicts=[];
+  teachers.forEach(t=>{
+    const byP={};
+    getTchAll(t.id).forEach(a=>{ if(!byP[a.period])byP[a.period]=[]; byP[a.period].push(a); });
+    PERIODS.forEach(p=>{ if(byP[p]?.length>1) conflicts.push({t,p,slots:byP[p]}); });
+  });
+  document.getElementById('tdSummary').textContent=conflicts.length?`⚠ ${conflicts.length} conflicts`:'✓ No conflicts';
+  if(!conflicts.length){body.innerHTML='<div class="no-conf">✓ No scheduling conflicts</div>';return;}
+  body.innerHTML=conflicts.map(c=>{
+    const allSameGrp=c.slots.every(a=>a.grpId===c.slots[0].grpId);
+    const cls=allSameGrp?'conf-yellow':'';
+    const icon=allSameGrp?'◐':'⚠';
+    const desc=allSameGrp?'Same-class multi-section':'Cross-class conflict';
+    const rows=c.slots.map(s=>{const subj=sById(s.subjId);return `<div class="conf-row"><strong>${s.sc.toUpperCase()}</strong> ${s.secId}${subj?' — '+subj.name:''}</div>`;}).join('');
+    return `<div class="conf-card ${cls}"><h3>${icon} ${c.t.name} · Period ${c.p} · ${desc}</h3>${rows}</div>`;
+  }).join('');
+}
+function tdLoad(teachers, body) {
+  const data=teachers.map(t=>{const a=getTchAll(t.id);return{t,n:a.length,free:PERIODS.length-a.length};}).sort((a,b)=>b.n-a.n);
+  const maxP=PERIODS.length;
+  document.getElementById('tdSummary').textContent='Avg '+Math.round(data.reduce((s,d)=>s+d.n,0)/Math.max(data.length,1)*10)/10+' periods/teacher';
+  body.innerHTML=`<table class="load-tbl"><thead><tr><th>Teacher</th><th>Room</th><th>Schools</th><th>Assigned</th><th>Free</th><th>Load</th></tr></thead><tbody>`+
+  data.map(d=>{
+    const pct=Math.round(d.n/maxP*100);
+    const c=pct>88?'var(--red)':pct>66?'var(--amber)':pct>33?'var(--blue)':'var(--green)';
+    const sc=d.t.schools.map(s=>`<span style="color:${s==='ms'?'var(--blue)':s==='sec'?'var(--purple)':'var(--teal)'};font-size:10px;font-weight:700">${s.toUpperCase()}</span>`).join(' ');
+    return `<tr><td style="font-weight:600">${d.t.name}</td><td style="color:var(--ink3)">${d.t.room}</td><td>${sc}</td><td style="text-align:center;font-weight:700;color:${pct>88?'var(--red)':'var(--ink)'}">${d.n}</td><td style="text-align:center;color:${d.free===0?'var(--red)':'var(--green)'}">${d.free}</td><td><div class="lbar-wrap"><div class="lbar-bg"><div class="lbar-fg" style="width:${pct}%;background:${c}"></div></div><span style="font-size:10px;color:var(--ink3);min-width:30px">${pct}%</span></div></td></tr>`;
+  }).join('')+'</tbody></table>';
+}
+
+// ══ STUDENT SCHEDULE VIEWER ═══════════════════════════════════════════════════
+let _ssvSel=null;
+function openSSV(){document.getElementById('ssvQ').value='';document.getElementById('ssvBody').innerHTML='<div class="ssv-empty">Search for a student</div>';_ssvSel=null;document.getElementById('ssvWrap').classList.add('open');}
+function ssvSearch(){
+  const q=document.getElementById('ssvQ').value.toLowerCase().trim();
+  const sc=document.getElementById('ssvSch').value;
+  const body=document.getElementById('ssvBody');
+  if(!q||q.length<2){body.innerHTML='<div class="ssv-empty">Type at least 2 characters</div>';return;}
+  const clsMap={ms:[11,12,13],sec:[14,15,16,17],ele:[3,4,5,6,7,8,9,10]};
+  let pool=state.students||[];
+  if(sc!=='all')pool=pool.filter(s=>clsMap[sc]?.includes(Number(s.cls)));
+  const matches=pool.filter(s=>s.name.toLowerCase().includes(q)).slice(0,40);
+  if(!matches.length){body.innerHTML='<div class="ssv-empty">No students found</div>';return;}
+  body.innerHTML='<div>'+matches.map(s=>{
+    const g=getStudentGrp(s);const bg=g?.bg||'#eee';const sec=s.section||null;
+    return `<div class="stu-row ${_ssvSel?.id===s.id?'active':''}" onclick="ssvShow('${s.id}')">
+      <span style="background:${bg};padding:1px 6px;border-radius:3px;font-size:9px;font-weight:700">${g?.badge||s.cls}</span>
+      <span style="font-size:12px;font-weight:600;flex:1">${s.name}</span>
+      <span style="font-size:10px;color:var(--ink3)">${s.sex||''}</span>
+      <span style="font-size:10px;color:${sec?'var(--green)':'var(--amber)'}">${sec||'No section'}</span>
+    </div>`;
+  }).join('')+'</div>';
+}
+function getStudentGrp(s){
+  const sc=s.cls>=11&&s.cls<=13?'ms':s.cls>=14&&s.cls<=17?'sec':'ele';
+  const m={11:'ms11',12:'ms12',13:'ms13',14:'s1',15:'s2',16:'s3',17:'s4'};
+  const gid=m[s.cls]||s.homeroom;
+  return GROUPS[sc]?.find(g=>g.id===gid);
+}
+function ssvShow(sid){
+  _ssvSel=state.students?.find(s=>s.id===sid);
+  if(!_ssvSel)return;
+  ssvSearch();// re-render list with highlight
+  const s=_ssvSel;
+  const sc=s.cls>=11&&s.cls<=13?'ms':s.cls>=14&&s.cls<=17?'sec':'ele';
+  const g=getStudentGrp(s);const sec=s.section;
+  const bg=g?.bg||'#eee';
+  let schedHtml='';
+  if(sec&&g){
+    const sched=state[sc]?.sched[g.id]?.[sec]||{};
+    if(Object.keys(sched).length){
+      schedHtml=`<table class="ssv-tbl"><thead><tr><th>Period</th><th>Time</th><th>Subject</th><th>Teacher</th></tr></thead><tbody>`+
+      PERIODS.map(p=>{
+        const c=sched[p];
+        if(!c)return`<tr><td style="font-family:monospace;font-weight:700;color:var(--ink3)">${p}</td><td style="font-size:10px;color:var(--ink3)">${PT[p]}</td><td colspan="2" style="color:#ddd">—</td></tr>`;
+        const t2=tById(c.teacherId);const subj=sById(c.subjectId);
+        return `<tr><td style="font-family:monospace;font-weight:700;color:var(--ink3)">${p}</td><td style="font-size:10px;color:var(--ink3)">${PT[p]}</td><td><span class="ssv-subj" style="background:${subj?.col||'#eee'};color:${subj?.tc||'#333'}">${subj?.name||c.subjectId}</span></td><td style="color:var(--ink2)">${t2?.name||c.teacherId}<span style="color:var(--ink3);font-size:10px"> · Rm ${t2?.room||''}</span></td></tr>`;
+      }).join('')+'</tbody></table>';
+    } else schedHtml='<div style="font-size:11px;color:var(--ink3);padding:12px;background:var(--bg);border-radius:6px">No schedule in section '+sec+'</div>';
+  } else schedHtml=`<div style="font-size:11px;color:var(--amber);background:var(--amber2);padding:8px 12px;border-radius:6px">No section assigned to this student.</div>`;
+  document.getElementById('ssvBody').innerHTML=`<div style="padding-top:10px">
+    <div style="background:var(--bg);border:1px solid var(--rule);border-radius:8px;padding:11px 13px;margin-bottom:10px">
+      <div style="font-size:15px;font-weight:700;margin-bottom:3px">${s.name}</div>
+      <div style="font-size:11px;color:var(--ink3);display:flex;gap:10px;flex-wrap:wrap">
+        <span><span style="background:${bg};padding:1px 6px;border-radius:3px;font-size:9px;font-weight:700">${g?.badge||s.cls}</span> ${g?.lbl||''}</span>
+        ${s.sex?`<span>${s.sex==='M'?'Male':'Female'}</span>`:''}
+        ${s.nationality?`<span>${s.nationality}</span>`:''}
+        <span style="color:${sec?'var(--green)':'var(--amber)'}">Section: ${sec||'None'}</span>
+      </div>
+    </div>${schedHtml}</div>`;
+}
+function printSSV(){
+  const content=document.querySelector('#ssvBody');
+  if(!content){alert('Open a student first.');return;}
+  const w=window.open('','_blank');
+  const css="body{font-family:Arial,sans-serif;padding:24px;font-size:12px}table{width:100%;border-collapse:collapse;margin-top:12px}th{background:#2a2a2e;color:#fff;padding:7px 10px;text-align:left}td{padding:6px 10px;border-bottom:1px solid #eee}.ssv-subj{display:inline-block;padding:2px 7px;border-radius:4px;font-weight:600}";
+  w.document.write('<html><head><title>Schedule</title><style>'+css+'</style></head><body>'+content.innerHTML+'</body></html>');
+  w.document.close();w.print();
+}
+
+// ══ PERSIST ════════════════════════════════════════════════════════════════════
+function saveState(){localStorage.setItem('school_sched_v5',JSON.stringify(state));const b=document.querySelector('.hbtn.pri');b.textContent='Saved ✓';setTimeout(()=>b.textContent='Save',1800);}
+function loadState(){try{const r=localStorage.getItem('school_sched_v5');return r?JSON.parse(r):null;}catch{return null;}}
+function clearSched(){if(!confirm('Clear all assignments for '+school+'?'))return;GROUPS[school].forEach(g=>{const ex=state[school].sched[g.id]?.['__ex__'];state[school].sched[g.id]={};if(ex)state[school].sched[g.id]['__ex__']=ex;});renderAll();}
+function exportCSV(){
+  const rows=[['School','Group','Section','Period','Time','Teacher','Room','Subject']];
+  ['ms','sec','ele'].forEach(sc=>{
+    GROUPS[sc].forEach(grp=>(state[sc].sections[grp.id]||[]).forEach(sec=>{
+      PERIODS.forEach(p=>{
+        const c=(state[sc].sched[grp.id]?.[sec]||{})[p];
+        if(c){const t=tById(c.teacherId);const s=sById(c.subjectId);rows.push([sc.toUpperCase(),grp.lbl,sec==='__ex__'?'Existing':sec,p,PT[p],t?.name||c.teacherId,t?.room||'',s?.name||c.label||c.subjectId]);}
+      });
+    }));
+  });
+  const csv=rows.map(r=>r.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(',')).join('\n');
+  const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.download='schedule_'+new Date().toISOString().slice(0,10)+'.csv';a.click();
+}
+function closeOverlay(id){document.getElementById(id).classList.remove('open');}
+
+// ══ RENDER ALL ════════════════════════════════════════════════════════════════
+function renderAll(){updateFilter();renderTeachers();renderSchedule();renderRP();renderStats();}
+renderAll();
+
+
+// ══ BELL SCHEDULE (actual from student data) ═══════════════════════════════
+// P1=A (8:00-8:45), P2=B (8:48-9:33) = Specials
+// P3=C through P8=H = Core + World Languages
+// Success = 12:55-13:25 (between F and Lunch)
+// Lunch = 13:25-13:55
+const DAYS = ['Mon','Tue','Wed','Thu','Fri'];
+const SPECIALS_PERIODS = ['P1','P2'];
+const TG_SUBJECTS = {
+  tech:  {name:'Technology',  col:'#f0f0ee',tc:'#303030'},
+  pe:    {name:'PE',           col:'#e8fffc',tc:'#085850'},
+  art:   {name:'Art',          col:'#fff8e0',tc:'#705800'},
+  music: {name:'Music',        col:'#fde8ff',tc:'#680888'},
+  lib:   {name:'Library',      col:'#e8f4ff',tc:'#184878'},
+  kazhist:{name:'KZ Hist',     col:'#eef4ff',tc:'#183880'},
+  kazakh:{name:'Kazakh',       col:'#fffbe0',tc:'#6a5000'},
+  ss:    {name:'Study Skills', col:'#f0f8ff',tc:'#084870'},
+};
+const TG_TEACHERS_FOR_SPECIALS = {
+  tech:   ['bawden_t','moss_j'],
+  pe:     ['sultan','tutunik_a'],
+  art:    ['perozo_m','merey'],
+  music:  ['kottman_c','stegal_j','janet_mu'],
+  lib:    ['kim_lib','yadira'],
+  kazhist:['yevlakhina','zhumanov_t'],
+  kazakh: ['paizova_a','zakenova_b'],
+};
+
+// ══ TRAVELING GROUPS STATE ════════════════════════════════════════════════
+// state.travelingGroups = {
+//   11: [ {id, name, elective, studentCount,
+//          schedule: { Mon:{P1:{subj,teacherId}, P2:{subj,teacherId}}, ... } } ],
+//   12: [...], 13: [...]
+// }
+// state.successTeachers = {
+//   ms11: { 'G6-A': teacherId, 'G6-B': teacherId },
+//   ms12: { ... }, ms13: { ... }
+// }
+
+if (!state.travelingGroups) {
+  state.travelingGroups = {
+    11: [
+      {id:'11A',name:'Symphonic Band',   elective:'symphonic_band',   studentCount:11,
+       schedule:{Mon:{P1:{subj:'tech',teacherId:null},P2:{subj:'pe',teacherId:null}},Tue:{P1:{subj:'art',teacherId:null},P2:{subj:'music',teacherId:null}},Wed:{P1:{subj:'pe',teacherId:null},P2:{subj:'music',teacherId:null}},Thu:{P1:{subj:'lib',teacherId:null},P2:{subj:'music',teacherId:null}},Fri:{P1:{subj:'tech',teacherId:null},P2:{subj:'pe',teacherId:null}}}},
+      {id:'11B',name:'Advanced Strings', elective:'advanced_strings', studentCount:8,
+       schedule:{Mon:{P1:{subj:'lib',teacherId:null},P2:{subj:'pe',teacherId:null}},Tue:{P1:{subj:'art',teacherId:null},P2:{subj:'music',teacherId:null}},Wed:{P1:{subj:'pe',teacherId:null},P2:{subj:'music',teacherId:null}},Thu:{P1:{subj:'lib',teacherId:null},P2:{subj:'music',teacherId:null}},Fri:{P1:{subj:'tech',teacherId:null},P2:{subj:'pe',teacherId:null}}}},
+      {id:'11C',name:'Intermediate Strings',elective:'intermediate_strings',studentCount:10,
+       schedule:{Mon:{P1:{subj:'pe',teacherId:null},P2:{subj:'lib',teacherId:null}},Tue:{P1:{subj:'music',teacherId:null},P2:{subj:'tech',teacherId:null}},Wed:{P1:{subj:'music',teacherId:null},P2:{subj:'pe',teacherId:null}},Thu:{P1:{subj:'tech',teacherId:null},P2:{subj:'pe',teacherId:null}},Fri:{P1:{subj:'music',teacherId:null},P2:{subj:'art',teacherId:null}}}},
+      {id:'11D',name:'Vocal Music',      elective:'vocal_music',      studentCount:6,
+       schedule:{Mon:{P1:{subj:'pe',teacherId:null},P2:{subj:'music',teacherId:null}},Tue:{P1:{subj:'art',teacherId:null},P2:{subj:'tech',teacherId:null}},Wed:{P1:{subj:'tech',teacherId:null},P2:{subj:'pe',teacherId:null}},Thu:{P1:{subj:'music',teacherId:null},P2:{subj:'pe',teacherId:null}},Fri:{P1:{subj:'lib',teacherId:null},P2:{subj:'music',teacherId:null}}}},
+      {id:'11E',name:'General Music',    elective:'general_music',    studentCount:0,
+       schedule:{Mon:{P1:{subj:'pe',teacherId:null},P2:{subj:'music',teacherId:null}},Tue:{P1:{subj:'art',teacherId:null},P2:{subj:'tech',teacherId:null}},Wed:{P1:{subj:'tech',teacherId:null},P2:{subj:'pe',teacherId:null}},Thu:{P1:{subj:'music',teacherId:null},P2:{subj:'pe',teacherId:null}},Fri:{P1:{subj:'lib',teacherId:null},P2:{subj:'music',teacherId:null}}}},
+      {id:'11F',name:'Concert Band',     elective:'concert_band',     studentCount:6,
+       schedule:{Mon:{P1:{subj:'pe',teacherId:null},P2:{subj:'lib',teacherId:null}},Tue:{P1:{subj:'music',teacherId:null},P2:{subj:'tech',teacherId:null}},Wed:{P1:{subj:'music',teacherId:null},P2:{subj:'pe',teacherId:null}},Thu:{P1:{subj:'tech',teacherId:null},P2:{subj:'pe',teacherId:null}},Fri:{P1:{subj:'music',teacherId:null},P2:{subj:'art',teacherId:null}}}},
+    ],
+    12: [
+      {id:'12A',name:'Symphonic Band',   elective:'symphonic_band',   studentCount:12,schedule:{Mon:{P1:{subj:'pe',teacherId:null},P2:{subj:'tech',teacherId:null}},Tue:{P1:{subj:'tech',teacherId:null},P2:{subj:'music',teacherId:null}},Wed:{P1:{subj:'art',teacherId:null},P2:{subj:'music',teacherId:null}},Thu:{P1:{subj:'pe',teacherId:null},P2:{subj:'music',teacherId:null}},Fri:{P1:{subj:'ss',teacherId:null},P2:{subj:'pe',teacherId:null}}}},
+      {id:'12B',name:'Advanced Strings', elective:'advanced_strings', studentCount:9, schedule:{Mon:{P1:{subj:'pe',teacherId:null},P2:{subj:'art',teacherId:null}},Tue:{P1:{subj:'tech',teacherId:null},P2:{subj:'music',teacherId:null}},Wed:{P1:{subj:'ss',teacherId:null},P2:{subj:'music',teacherId:null}},Thu:{P1:{subj:'pe',teacherId:null},P2:{subj:'music',teacherId:null}},Fri:{P1:{subj:'tech',teacherId:null},P2:{subj:'pe',teacherId:null}}}},
+      {id:'12C',name:'Concert Band',     elective:'concert_band',     studentCount:7, schedule:{Mon:{P1:{subj:'tech',teacherId:null},P2:{subj:'art',teacherId:null}},Tue:{P1:{subj:'music',teacherId:null},P2:{subj:'pe',teacherId:null}},Wed:{P1:{subj:'music',teacherId:null},P2:{subj:'pe',teacherId:null}},Thu:{P1:{subj:'tech',teacherId:null},P2:{subj:'pe',teacherId:null}},Fri:{P1:{subj:'music',teacherId:null},P2:{subj:'ss',teacherId:null}}}},
+      {id:'12D',name:'Intermediate Strings',elective:'intermediate_strings',studentCount:5,schedule:{Mon:{P1:{subj:'tech',teacherId:null},P2:{subj:'art',teacherId:null}},Tue:{P1:{subj:'music',teacherId:null},P2:{subj:'pe',teacherId:null}},Wed:{P1:{subj:'music',teacherId:null},P2:{subj:'pe',teacherId:null}},Thu:{P1:{subj:'tech',teacherId:null},P2:{subj:'pe',teacherId:null}},Fri:{P1:{subj:'music',teacherId:null},P2:{subj:'ss',teacherId:null}}}},
+      {id:'12E',name:'Vocal Music',      elective:'vocal_music',      studentCount:2, schedule:{Mon:{P1:{subj:'ss',teacherId:null},P2:{subj:'music',teacherId:null}},Tue:{P1:{subj:'tech',teacherId:null},P2:{subj:'pe',teacherId:null}},Wed:{P1:{subj:'art',teacherId:null},P2:{subj:'pe',teacherId:null}},Thu:{P1:{subj:'music',teacherId:null},P2:{subj:'pe',teacherId:null}},Fri:{P1:{subj:'tech',teacherId:null},P2:{subj:'music',teacherId:null}}}},
+      {id:'12F',name:'General Music',    elective:'general_music',    studentCount:0, schedule:{Mon:{P1:{subj:'ss',teacherId:null},P2:{subj:'music',teacherId:null}},Tue:{P1:{subj:'tech',teacherId:null},P2:{subj:'pe',teacherId:null}},Wed:{P1:{subj:'art',teacherId:null},P2:{subj:'pe',teacherId:null}},Thu:{P1:{subj:'music',teacherId:null},P2:{subj:'pe',teacherId:null}},Fri:{P1:{subj:'tech',teacherId:null},P2:{subj:'music',teacherId:null}}}},
+    ],
+    13: [
+      {id:'13A',name:'Symphonic Band',   elective:'symphonic_band',   studentCount:9, schedule:{Mon:{P1:{subj:'ss',teacherId:null},P2:{subj:'tech',teacherId:null}},Tue:{P1:{subj:'tech',teacherId:null},P2:{subj:'music',teacherId:null}},Wed:{P1:{subj:'pe',teacherId:null},P2:{subj:'music',teacherId:null}},Thu:{P1:{subj:'art',teacherId:null},P2:{subj:'music',teacherId:null}},Fri:{P1:{subj:'pe',teacherId:null},P2:{subj:'tech',teacherId:null}}}},
+      {id:'13B',name:'Advanced Strings', elective:'advanced_strings', studentCount:9, schedule:{Mon:{P1:{subj:'art',teacherId:null},P2:{subj:'tech',teacherId:null}},Tue:{P1:{subj:'tech',teacherId:null},P2:{subj:'music',teacherId:null}},Wed:{P1:{subj:'pe',teacherId:null},P2:{subj:'music',teacherId:null}},Thu:{P1:{subj:'ss',teacherId:null},P2:{subj:'music',teacherId:null}},Fri:{P1:{subj:'pe',teacherId:null},P2:{subj:'tech',teacherId:null}}}},
+      {id:'13C',name:'Concert Band',     elective:'concert_band',     studentCount:12,schedule:{Mon:{P1:{subj:'tech',teacherId:null},P2:{subj:'ss',teacherId:null}},Tue:{P1:{subj:'music',teacherId:null},P2:{subj:'pe',teacherId:null}},Wed:{P1:{subj:'music',teacherId:null},P2:{subj:'pe',teacherId:null}},Thu:{P1:{subj:'art',teacherId:null},P2:{subj:'pe',teacherId:null}},Fri:{P1:{subj:'music',teacherId:null},P2:{subj:'tech',teacherId:null}}}},
+      {id:'13D',name:'Intermediate Strings',elective:'intermediate_strings',studentCount:4,schedule:{Mon:{P1:{subj:'ss',teacherId:null},P2:{subj:'tech',teacherId:null}},Tue:{P1:{subj:'music',teacherId:null},P2:{subj:'pe',teacherId:null}},Wed:{P1:{subj:'music',teacherId:null},P2:{subj:'pe',teacherId:null}},Thu:{P1:{subj:'art',teacherId:null},P2:{subj:'pe',teacherId:null}},Fri:{P1:{subj:'music',teacherId:null},P2:{subj:'tech',teacherId:null}}}},
+      {id:'13E',name:'Vocal Music',      elective:'vocal_music',      studentCount:8, schedule:{Mon:{P1:{subj:'art',teacherId:null},P2:{subj:'music',teacherId:null}},Tue:{P1:{subj:'music',teacherId:null},P2:{subj:'pe',teacherId:null}},Wed:{P1:{subj:'pe',teacherId:null},P2:{subj:'tech',teacherId:null}},Thu:{P1:{subj:'music',teacherId:null},P2:{subj:'ss',teacherId:null}},Fri:{P1:{subj:'pe',teacherId:null},P2:{subj:'music',teacherId:null}}}},
+      {id:'13F',name:'General Music',    elective:'general_music',    studentCount:7, schedule:{Mon:{P1:{subj:'art',teacherId:null},P2:{subj:'music',teacherId:null}},Tue:{P1:{subj:'music',teacherId:null},P2:{subj:'pe',teacherId:null}},Wed:{P1:{subj:'pe',teacherId:null},P2:{subj:'tech',teacherId:null}},Thu:{P1:{subj:'music',teacherId:null},P2:{subj:'ss',teacherId:null}},Fri:{P1:{subj:'pe',teacherId:null},P2:{subj:'music',teacherId:null}}}},
+    ],
+  };
+}
+if (!state.successTeachers) {
+  state.successTeachers = {ms11:{},ms12:{},ms13:{}};
+}
+
+// ══ MS SUB-TABS ═══════════════════════════════════════════════════════════
+let _msTab = 'core';
+let _tgAge = 11;
+let _tgEditIdx = null;
+let _tgEditAge = null;
+let _tgCellModal = null; // {age, groupIdx, day, period}
+
+function setMsTab(tab, el) {
+  _msTab = tab;
+  document.querySelectorAll('.ms-stab').forEach(e=>e.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('schedContent').style.display = tab==='core' ? '' : 'none';
+  document.getElementById('tgContent').style.display = tab==='traveling' ? '' : 'none';
+  document.getElementById('autoBn').style.display = 'none';
+  if (tab==='traveling') renderTGPanel();
+}
+
+// Show MS subtabs only when on MS school
+const _origSwitchSchool = switchSchool;
+// Patch switchSchool to show/hide subtabs
+function switchSchool(sc, tab) {
+  school = sc; selT = null;
+  document.querySelectorAll('.stab').forEach(t=>t.classList.remove('active'));
+  tab.classList.add('active');
+  // Show MS subtabs only for MS
+  const subtabs = document.getElementById('msSubtabs');
+  if (subtabs) subtabs.style.display = sc==='ms' ? 'flex' : 'none';
+  // If switching away from MS, reset to core view
+  if (sc !== 'ms') {
+    document.getElementById('schedContent').style.display = '';
+    document.getElementById('tgContent').style.display = 'none';
+    _msTab = 'core';
+  }
+  updateFilter(); renderAll();
+}
+
+// ══ TRAVELING GROUPS PANEL ═══════════════════════════════════════════════
+function setTGAge(age, btn) {
+  _tgAge = age;
+  document.querySelectorAll('.tg-age-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  renderTGPanel();
+}
+
+function renderTGPanel() {
+  const groups = state.travelingGroups[_tgAge] || [];
+  const dayLabels = {Mon:'Mon',Tue:'Tue',Wed:'Wed',Thu:'Thu',Fri:'Fri'};
+
+  // Build 10-column header: label | Mon-P1 | Mon-P2 | Tue-P1 | ...
+  const colHeaders = DAYS.map(d => `
+    <div class="tg-grid-hd">${d}<br><span style="font-size:9px;opacity:.6">P1 8:00</span></div>
+    <div class="tg-grid-hd">${d}<br><span style="font-size:9px;opacity:.6">P2 8:48</span></div>
+  `).join('');
+
+  const groupRows = groups.map((g, gi) => {
+    const cells = DAYS.map(day => {
+      return SPECIALS_PERIODS.map(per => {
+        const slot = g.schedule?.[day]?.[per];
+        const subj = slot?.subj ? TG_SUBJECTS[slot.subj] : null;
+        const teacher = slot?.teacherId ? tById(slot.teacherId) : null;
+        // Check for teacher conflict in other groups same day/period/age
+        const conflict = slot?.teacherId && checkTGConflict(_tgAge, gi, day, per, slot.teacherId);
+        if (slot?.subj) {
+          return `<div class="tg-cell filled ${conflict?'conflict':''}"
+            onclick="openTGCellModal(${_tgAge},${gi},'${day}','${per}')"
+            title="${conflict?'Teacher conflict!':''}">
+            <span class="cx" onclick="clearTGCell(${_tgAge},${gi},'${day}','${per}',event)">×</span>
+            <div class="ct" style="color:${subj?.tc||'var(--ink)'}">${subj?.name||slot.subj}</div>
+            <div class="cs">${teacher ? teacher.name.split(',')[0] : '— no teacher'}</div>
+          </div>`;
+        }
+        return `<div class="tg-cell" onclick="openTGCellModal(${_tgAge},${gi},'${day}','${per}')">
+          <div class="cempty">+</div>
+        </div>`;
+      }).join('');
+    }).join('');
+
+    const totalSlots = DAYS.length * 2;
+    const filledSlots = DAYS.reduce((s,d)=>s+SPECIALS_PERIODS.filter(p=>g.schedule?.[d]?.[p]?.subj).length, 0);
+
+    return `
+      <div class="tg-group-lbl" style="cursor:pointer" onclick="openTGEdit(${_tgAge},${gi})">
+        <div class="tg-group-name">${g.id} — ${g.name}</div>
+        <div class="tg-group-meta">${g.studentCount} students · ${filledSlots}/${totalSlots} slots</div>
+      </div>
+      ${cells}`;
+  }).join('');
+
+  document.getElementById('tgGrid').innerHTML = `
+    <div class="tg-grid">
+      <div class="tg-grid-hd lbl">Group</div>
+      ${colHeaders}
+      ${groupRows}
+    </div>
+    <div class="tg-add-group" onclick="addTGGroup()">+ Add traveling group for ${_tgAge}yo</div>`;
+
+  renderSuccessBlock();
+}
+
+function checkTGConflict(age, groupIdx, day, period, teacherId) {
+  const groups = state.travelingGroups[age] || [];
+  return groups.some((g, gi) => {
+    if (gi === groupIdx) return false;
+    const slot = g.schedule?.[day]?.[period];
+    return slot?.teacherId === teacherId;
+  });
+}
+
+// ══ TG CELL ASSIGN MODAL ══════════════════════════════════════════════════
+function openTGCellModal(age, gi, day, per) {
+  _tgCellModal = {age, gi, day, per};
+  const g = state.travelingGroups[age][gi];
+  const slot = g.schedule?.[day]?.[per] || {};
+  mT = slot.teacherId || null;
+  mS = slot.subj || null;
+
+  document.getElementById('mTitle').textContent = `${g.id} — ${day} ${per}`;
+  document.getElementById('mSub').textContent = `${g.name} · ${per==='P1'?'8:00-8:45':'8:48-9:33'}`;
+  document.getElementById('mTSearch').value = '';
+
+  // Override subject list for specials
+  document.getElementById('mSubjSec').style.display = 'block';
+  document.getElementById('mSubjGrid').innerHTML = Object.entries(TG_SUBJECTS).map(([id,s]) =>
+    `<button class="sopt ${mS===id?'chosen':''}" onclick="chooseTGSubj('${id}')"
+      style="${mS===id?'':`background:${s.col};color:${s.tc};border-color:${s.col}`}">${s.name}</button>`
+  ).join('');
+
+  // Filter teachers to those relevant for the selected subject
+  renderTGTeachers(slot.subj);
+  document.getElementById('overlay').classList.add('open');
+}
+
+function chooseTGSubj(sid) {
+  mS = sid;
+  document.querySelectorAll('.sopt').forEach(el => {
+    const s = TG_SUBJECTS[sid]; if (!s) return;
+    const ch = el.textContent.trim() === s.name;
+    el.classList.toggle('chosen', ch);
+    el.style.background = ch?'':s.col; el.style.color = ch?'':s.tc; el.style.borderColor = ch?'':s.col;
+  });
+  mT = null;
+  renderTGTeachers(sid);
+}
+
+function renderTGTeachers(subjId) {
+  const relevantIds = TG_TEACHERS_FOR_SPECIALS[subjId] || [];
+  // Show relevant teachers first, then others
+  const relevant = TEACHERS.filter(t => relevantIds.includes(t.id) && t.schools.includes('ms'));
+  const others = TEACHERS.filter(t => !relevantIds.includes(t.id) && t.schools.includes('ms'));
+  const all = [...relevant, ...others];
+
+  document.getElementById('mTList').innerHTML = [
+    relevant.length ? `<div style="font-size:10px;font-weight:700;color:var(--green);text-transform:uppercase;letter-spacing:.06em;padding:4px 8px;margin-bottom:2px">Suggested for ${TG_SUBJECTS[subjId]?.name||subjId}</div>` : '',
+    ...relevant.map(t => tgTeacherRow(t)),
+    others.length && relevant.length ? `<div style="font-size:10px;color:var(--ink3);padding:4px 8px;margin:4px 0 2px">Other teachers</div>` : '',
+    ...others.map(t => tgTeacherRow(t)),
+  ].join('');
+}
+
+function tgTeacherRow(t) {
+  const busy = _tgCellModal ? checkTGConflict(_tgCellModal.age, _tgCellModal.gi, _tgCellModal.day, _tgCellModal.per, t.id) : false;
+  const warn = busy ? ` <span class="to-w">⚠ conflict same slot</span>` : '';
+  // Show which other groups this teacher is assigned in same day
+  const asgns = getTchAll(t.id);
+  const pills = PERIODS.map(p => {
+    const a = asgns.filter(x=>x.period===p);
+    const bg = a.length?(a[0].sc==='ms'?'var(--blue2)':a[0].sc==='sec'?'var(--purple2)':'var(--teal2)'):'#eee';
+    const tc = a.length?(a[0].sc==='ms'?'var(--blue)':a[0].sc==='sec'?'var(--purple)':'var(--teal)'):'#aaa';
+    return `<span style="font-size:9px;font-family:monospace;font-weight:700;padding:2px 3px;border-radius:2px;background:${bg};color:${tc}">${p}</span>`;
+  }).join('');
+  return `<div class="topt ${mT===t.id?'chosen':''}" onclick="chooseTch('${t.id}')">
+    <div style="flex:1"><div class="to-n">${t.name}${warn}</div><div class="to-r">Room ${t.room}</div></div>
+    <div class="to-pp">${pills}</div>
+  </div>`;
+}
+
+// Patch confirmAssign to handle TG cells
+const _origConfirmAssign = confirmAssign;
+function confirmAssign() {
+  if (_tgCellModal) {
+    // Save to TG state
+    const {age, gi, day, per} = _tgCellModal;
+    if (!state.travelingGroups[age][gi].schedule) state.travelingGroups[age][gi].schedule = {};
+    if (!state.travelingGroups[age][gi].schedule[day]) state.travelingGroups[age][gi].schedule[day] = {};
+    state.travelingGroups[age][gi].schedule[day][per] = {subj: mS, teacherId: mT};
+    _tgCellModal = null;
+    closeModal();
+    renderTGPanel();
+    return;
+  }
+  // Normal assign
+  if (!mT || !mS) { alert('Choose a teacher and subject.'); return; }
+  setCell(mCell.grp, mCell.sec, mCell.p, {teacherId:mT, subjectId:mS});
+  closeModal(); renderAll();
+}
+
+// Patch closeModal to clear _tgCellModal
+const _origCloseModal = closeModal;
+function closeModal() {
+  _tgCellModal = null;
+  document.getElementById('overlay').classList.remove('open');
+  mCell = mT = mS = null;
+}
+
+function clearTGCell(age, gi, day, per, e) {
+  e.stopPropagation();
+  if (state.travelingGroups[age]?.[gi]?.schedule?.[day]?.[per]) {
+    state.travelingGroups[age][gi].schedule[day][per] = {subj:null,teacherId:null};
+  }
+  renderTGPanel();
+}
+
+// ══ EDIT/ADD/DELETE TRAVELING GROUP ══════════════════════════════════════
+function openTGEdit(age, gi) {
+  _tgEditAge = age;
+  _tgEditIdx = gi;
+  const g = state.travelingGroups[age][gi];
+  document.getElementById('tgEditTitle').textContent = 'Edit Group';
+  document.getElementById('tgEditName').value = g.name;
+  document.getElementById('tgEditId').value = g.id;
+  document.getElementById('tgEditElective').value = g.elective || 'custom';
+  document.getElementById('tgEditCount').value = g.studentCount || 0;
+  document.getElementById('tgEditOverlay').classList.add('open');
+}
+
+function addTGGroup() {
+  const age = _tgAge;
+  const groups = state.travelingGroups[age] || [];
+  const newIdx = groups.length;
+  const newId = age + String.fromCharCode(65 + newIdx);
+  const blank = {P1:{subj:null,teacherId:null},P2:{subj:null,teacherId:null}};
+  const blankSched = {};
+  DAYS.forEach(d => blankSched[d] = {P1:{subj:null,teacherId:null},P2:{subj:null,teacherId:null}});
+  state.travelingGroups[age].push({id:newId, name:'New Group', elective:'custom', studentCount:0, schedule:blankSched});
+  _tgEditAge = age;
+  _tgEditIdx = newIdx;
+  document.getElementById('tgEditTitle').textContent = 'New Group';
+  document.getElementById('tgEditName').value = 'New Group';
+  document.getElementById('tgEditId').value = newId;
+  document.getElementById('tgEditElective').value = 'custom';
+  document.getElementById('tgEditCount').value = 0;
+  document.getElementById('tgEditOverlay').classList.add('open');
+}
+
+function saveTGGroup() {
+  const g = state.travelingGroups[_tgEditAge][_tgEditIdx];
+  g.name = document.getElementById('tgEditName').value.trim() || g.name;
+  g.id = document.getElementById('tgEditId').value.trim() || g.id;
+  g.elective = document.getElementById('tgEditElective').value;
+  g.studentCount = Number(document.getElementById('tgEditCount').value) || 0;
+  closeOverlay('tgEditOverlay');
+  renderTGPanel();
+}
+
+function deleteTGGroup() {
+  if (!confirm('Delete this traveling group? All assignments will be lost.')) return;
+  state.travelingGroups[_tgEditAge].splice(_tgEditIdx, 1);
+  closeOverlay('tgEditOverlay');
+  renderTGPanel();
+}
+
+// ══ SUCCESS BLOCK ═════════════════════════════════════════════════════════
+function renderSuccessBlock() {
+  const grpLabel = {ms11:'Grade 6 (11yo)',ms12:'Grade 7 (12yo)',ms13:'Grade 8 (13yo)'};
+  const html = Object.entries(grpLabel).map(([grpId, lbl]) => {
+    const secs = (state.ms.sections[grpId]||[]).filter(s=>s!=='__ex__');
+    const rows = secs.map(sec => {
+      const tid = state.successTeachers?.[grpId]?.[sec];
+      const t = tid ? tById(tid) : null;
+      return `<div class="success-row">
+        <div class="success-sec">${sec}</div>
+        <div class="success-teacher">${t ? t.name : '<span style="color:var(--ink3)">— not assigned</span>'}</div>
+        <span class="success-edit" onclick="assignSuccess('${grpId}','${sec}')">Edit</span>
+      </div>`;
+    }).join('');
+    return rows ? `<div style="font-size:10px;font-weight:700;color:var(--ink3);text-transform:uppercase;letter-spacing:.06em;padding:8px 14px;border-bottom:1px solid var(--rule2)">${lbl} — Success (12:55–13:25)</div>${rows}` : '';
+  }).join('');
+  document.getElementById('successGrid').innerHTML = `
+    <div class="success-hd">Success / Advisory Teachers</div>${html}`;
+}
+
+function assignSuccess(grpId, secId) {
+  // Simple prompt for now — TODO: use teacher picker modal
+  const current = state.successTeachers?.[grpId]?.[secId];
+  const teachers = TEACHERS.filter(t=>t.schools.includes('ms'));
+  const list = teachers.map((t,i)=>`${i+1}. ${t.name}`).join('\n');
+  const pick = prompt(`Assign Success teacher for ${secId}:\n\n${list}\n\nEnter number or teacher name:`);
+  if (!pick) return;
+  const num = parseInt(pick);
+  const t = isNaN(num) ? teachers.find(x=>x.name.toLowerCase().includes(pick.toLowerCase())) : teachers[num-1];
+  if (!t) { alert('Teacher not found'); return; }
+  if (!state.successTeachers[grpId]) state.successTeachers[grpId] = {};
+  state.successTeachers[grpId][secId] = t.id;
+  renderTGPanel();
+}
+
+// ══ PATCH STUDENT VIEW to include TG schedule ══════════════════════════════
+// Enhance ssvShow to include traveling group P1/P2 for MS students
+const _origSsvShow = ssvShow;
+function ssvShow(sid) {
+  _ssvSel = state.students?.find(s=>s.id===sid);
+  if (!_ssvSel) return;
+  ssvSearch();
+  const s = _ssvSel;
+  const sc = s.cls>=11&&s.cls<=13?'ms':s.cls>=14&&s.cls<=17?'sec':'ele';
+  const g = getStudentGrp(s);
+  const sec = s.section;
+  const bg = g?.bg||'#eee';
+
+  // For MS: find traveling group
+  let tgHtml = '';
+  if (sc === 'ms') {
+    const age = s.cls;
+    const tgGroups = state.travelingGroups[age] || [];
+    // Match by elective choice (from cohort data if available)
+    // For now, show which group they'd be in based on elective field
+    const elective = s.elective || s.music || null;
+    const tg = tgGroups.find(g =>
+      elective && (g.elective.toLowerCase().includes(elective.toLowerCase()) ||
+      g.name.toLowerCase().includes(elective.toLowerCase()))
+    );
+    if (tg) {
+      const tgRows = DAYS.map(day =>
+        SPECIALS_PERIODS.map(per => {
+          const slot = tg.schedule?.[day]?.[per];
+          const subjData = slot?.subj ? TG_SUBJECTS[slot.subj] : null;
+          const teacher = slot?.teacherId ? tById(slot.teacherId) : null;
+          const time = per==='P1'?'8:00':'8:48';
+          return `<tr>
+            <td style="font-family:monospace;font-weight:700;color:var(--ink3)">${day}</td>
+            <td style="font-size:10px;color:var(--ink3)">${time}-${per==='P1'?'8:45':'9:33'}</td>
+            <td style="font-size:10px;color:var(--ink3)">${per}</td>
+            <td>${subjData?`<span class="ssv-subj" style="background:${subjData.col};color:${subjData.tc}">${subjData.name}</span>`:'-'}</td>
+            <td>${teacher?teacher.name:'-'}</td>
+          </tr>`;
+        }).join('')
+      ).join('');
+      tgHtml = `<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--ink3);margin:12px 0 6px">
+        Traveling Group: ${tg.id} — ${tg.name}</div>
+        <table class="ssv-tbl"><thead><tr><th>Day</th><th>Time</th><th>Period</th><th>Subject</th><th>Teacher</th></tr></thead>
+        <tbody>${tgRows}</tbody></table>`;
+    } else if (sc==='ms') {
+      tgHtml = `<div style="font-size:11px;color:var(--amber);background:var(--amber2);padding:7px 11px;border-radius:6px;margin:10px 0">No traveling group matched — elective not set in student data.</div>`;
+    }
+
+    // Success
+    const successTid = state.successTeachers?.[g?.id]?.[sec];
+    const successT = successTid ? tById(successTid) : null;
+    if (successT) {
+      tgHtml += `<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--ink3);margin:12px 0 4px">Success (12:55–13:25 daily)</div>
+        <div style="font-size:12px;padding:7px 10px;background:var(--bg);border-radius:6px">${successT.name} · Room ${successT.room}</div>`;
+    }
+  }
+
+  // Core schedule
+  let schedHtml = tgHtml;
+  if (sec && g) {
+    const sched = state[sc]?.sched[g.id]?.[sec]||{};
+    if (Object.keys(sched).length) {
+      schedHtml += `<div style="font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--ink3);margin:12px 0 6px">Core Schedule (P3–P8 daily)</div>
+        <table class="ssv-tbl"><thead><tr><th>Period</th><th>Time</th><th>Subject</th><th>Teacher</th></tr></thead>
+        <tbody>` + PERIODS.filter(p=>!['A','B'].includes(p)).map(p=>{
+          const c = sched[p];
+          if(!c) return `<tr><td style="font-family:monospace;font-weight:700;color:var(--ink3)">${p}</td><td style="font-size:10px;color:var(--ink3)">${PT[p]}</td><td colspan="2" style="color:#ddd">—</td></tr>`;
+          const t2=tById(c.teacherId);const subj=sById(c.subjectId);
+          return `<tr><td style="font-family:monospace;font-weight:700;color:var(--ink3)">${p}</td><td style="font-size:10px;color:var(--ink3)">${PT[p]}</td>
+            <td>${subj?`<span class="ssv-subj" style="background:${subj.col};color:${subj.tc}">${subj.name}</span>`:c.subjectId}</td>
+            <td>${t2?t2.name:c.teacherId}<span style="color:var(--ink3);font-size:10px"> · Rm ${t2?.room||''}</span></td></tr>`;
+        }).join('') + '</tbody></table>';
+    }
+  } else {
+    schedHtml += `<div style="font-size:11px;color:var(--amber);background:var(--amber2);padding:8px 12px;border-radius:6px;margin-top:10px">No section assigned.</div>`;
+  }
+
+  document.getElementById('ssvBody').innerHTML = `<div style="padding-top:10px">
+    <div style="background:var(--bg);border:1px solid var(--rule);border-radius:8px;padding:11px 13px;margin-bottom:10px">
+      <div style="font-size:15px;font-weight:700;margin-bottom:3px">${s.name}</div>
+      <div style="font-size:11px;color:var(--ink3);display:flex;gap:10px;flex-wrap:wrap">
+        <span><span style="background:${bg};padding:1px 6px;border-radius:3px;font-size:9px;font-weight:700">${g?.badge||s.cls}</span> ${g?.lbl||''}</span>
+        ${s.sex?`<span>${s.sex==='M'?'Male':'Female'}</span>`:''}
+        ${s.nationality?`<span>${s.nationality}</span>`:''}
+        <span style="color:${sec?'var(--green)':'var(--amber)'}">Section: ${sec||'None'}</span>
+        ${s.elective?`<span style="color:var(--purple)">Elective: ${s.elective}</span>`:''}
+      </div>
+    </div>${schedHtml}</div>`;
+}
+
+// ══ INIT ══
+(function(){const sub=document.getElementById('msSubtabs');if(sub)sub.style.display=school==='ms'?'flex':'none';})();
+// ══ SECONDARY COURSE BUILDER ══════════════════════════════════════════════
+// Data model:
+// state.courses = [
+//   { id, name, grades:['s1','s2'...], subjId, color,
+//     sections: [
+//       { id, period, teacherId, studentCount, studentIds:[] }
+//     ]
+//   }
+// ]
+
+const SEC_PERIODS = [
+  {id:'P1', time:'8:00–8:45'},
+  {id:'P2', time:'8:48–9:33'},
+  {id:'P3', time:'9:36–10:21'},
+  {id:'P4', time:'10:31–11:16'},
+  {id:'P5', time:'11:19–12:04'},
+  {id:'LS', time:'12:07–13:07', label:'Lunch/Success', fixed:true},
+  {id:'P6', time:'13:10–13:55'},
+  {id:'P7', time:'13:58–14:43'},
+  {id:'P8', time:'14:45–15:30'},
+];
+
+// Default courses pre-populated from known data
+const DEFAULT_COURSES = [
+  {id:'c_lit1',   name:'Literature/Writing 1',   grades:['s1'],          subjId:'lit1',     sections:[]},
+  {id:'c_lit2',   name:'Literature/Writing 2',   grades:['s2'],          subjId:'lit2',     sections:[]},
+  {id:'c_aplit',  name:'AP Literature/Language', grades:['s3','s4'],     subjId:'aplit',    sections:[]},
+  {id:'c_ie_s',   name:'Transition English (IE)',grades:['s1','s2'],     subjId:'ie_s',     sections:[]},
+  {id:'c_bio',    name:'Biology',                grades:['s1','s2','s3'],subjId:'bio',      sections:[]},
+  {id:'c_chem',   name:'Chemistry',              grades:['s2','s3','s4'],subjId:'chem',     sections:[]},
+  {id:'c_phys',   name:'Physics',                grades:['s3','s4'],     subjId:'phys',     sections:[]},
+  {id:'c_geo',    name:'Geometry',               grades:['s1','s2'],     subjId:'math_s',   sections:[]},
+  {id:'c_alg',    name:'Algebra / Algebra 2',    grades:['s1','s2'],     subjId:'math_s',   sections:[]},
+  {id:'c_precalc',name:'Pre-Calculus',           grades:['s3'],          subjId:'precalc',  sections:[]},
+  {id:'c_calc',   name:'AP Calculus',            grades:['s3','s4'],     subjId:'calc',     sections:[]},
+  {id:'c_stats',  name:'AP Statistics',          grades:['s3','s4'],     subjId:'math_s',   sections:[]},
+  {id:'c_wh',     name:'World History / Modern', grades:['s2'],          subjId:'hist_s',   sections:[]},
+  {id:'c_apwh',   name:'AP World History',       grades:['s2','s3'],     subjId:'hist_s',   sections:[]},
+  {id:'c_gov',    name:'Government / Economics', grades:['s3','s4'],     subjId:'econ',     sections:[]},
+  {id:'c_sr',     name:'Senior Research / AP Sem',grades:['s4'],         subjId:'sr',       sections:[]},
+  {id:'c_kh',     name:'Kazakh History',         grades:['s1','s2','s3','s4'],subjId:'kazhist_s',sections:[]},
+  {id:'c_kaz',    name:'Kazakh Language',        grades:['s1','s2','s3','s4'],subjId:'kaz_s',sections:[]},
+  {id:'c_rus',    name:'Russian Language',       grades:['s1','s2','s3','s4'],subjId:'rus_s',sections:[]},
+  {id:'c_spa',    name:'Spanish Language',       grades:['s1','s2','s3','s4'],subjId:'spa_s',sections:[]},
+  {id:'c_fre',    name:'French Language',        grades:['s1','s2','s3','s4'],subjId:'fre_s',sections:[]},
+  {id:'c_art',    name:'Art / AP Art',           grades:['s1','s2','s3','s4'],subjId:'art_s',sections:[]},
+  {id:'c_vmus',   name:'Vocal Music',            grades:['s1','s2','s3','s4'],subjId:'music_s',sections:[]},
+  {id:'c_imus',   name:'Instrumental Music',     grades:['s1','s2','s3','s4'],subjId:'music_s',sections:[]},
+  {id:'c_band',   name:'Band',                   grades:['s1','s2','s3','s4'],subjId:'music_s',sections:[]},
+  {id:'c_pe',     name:'Physical Education',     grades:['s1','s2','s3','s4'],subjId:'pe_s', sections:[]},
+  {id:'c_hf',     name:'Health & Fitness',       grades:['s1','s2','s3','s4'],subjId:'pe_s', sections:[]},
+  {id:'c_tech',   name:'Technology / CS',        grades:['s1','s2','s3','s4'],subjId:'tech_s',sections:[]},
+];
+
+if (!state.courses) {
+  state.courses = DEFAULT_COURSES.map(c => ({...c, sections:[...c.sections]}));
+}
+
+// ── UI STATE ──────────────────────────────────────────────────────────────
+let _cbGrade = 'all';       // current grade filter
+let _cbSearch = '';         // search text
+let _cbExpanded = new Set(); // expanded course IDs
+let _cbEditCourse = null;   // course being edited
+let _cbEditSection = null;  // {courseId, sectionIdx} being edited
+
+// ── SECONDARY TAB OVERRIDE ────────────────────────────────────────────────
+// Patch switchSchool to show Course Builder for sec
+const _origSwitchSchoolTG = switchSchool;
+function switchSchool(sc, tab) {
+  school = sc; selT = null;
+  document.querySelectorAll('.stab').forEach(t => t.classList.remove('active'));
+  tab.classList.add('active');
+
+  const msSubtabs = document.getElementById('msSubtabs');
+  const secSubtabs = document.getElementById('secSubtabs');
+  const schedContent = document.getElementById('schedContent');
+  const tgContent = document.getElementById('tgContent');
+  const cbContent = document.getElementById('cbContent');
+
+  if (msSubtabs) msSubtabs.style.display = sc==='ms' ? 'flex' : 'none';
+  if (secSubtabs) secSubtabs.style.display = sc==='sec' ? 'flex' : 'none';
+
+  // Show/hide panels
+  if (sc === 'sec') {
+    if (_secTab === 'grid') {
+      schedContent.style.display = '';
+      if (cbContent) cbContent.style.display = 'none';
+      if (tgContent) tgContent.style.display = 'none';
+    } else {
+      schedContent.style.display = 'none';
+      if (cbContent) cbContent.style.display = '';
+      if (tgContent) tgContent.style.display = 'none';
+    }
+  } else if (sc === 'ms') {
+    schedContent.style.display = _msTab==='core' ? '' : 'none';
+    if (cbContent) cbContent.style.display = 'none';
+    if (tgContent) tgContent.style.display = _msTab==='traveling' ? '' : 'none';
+  } else {
+    schedContent.style.display = '';
+    if (cbContent) cbContent.style.display = 'none';
+    if (tgContent) tgContent.style.display = 'none';
+  }
+
+  updateFilter(); renderAll();
+  if (sc==='sec' && _secTab==='courses') renderCourseBuilder();
+}
+
+let _secTab = 'courses'; // default to Course Builder for sec
+
+function setSecTab(tab, el) {
+  _secTab = tab;
+  document.querySelectorAll('.sec-stab').forEach(e => e.classList.remove('active'));
+  el.classList.add('active');
+  const schedContent = document.getElementById('schedContent');
+  const cbContent = document.getElementById('cbContent');
+  schedContent.style.display = tab==='grid' ? '' : 'none';
+  if (cbContent) cbContent.style.display = tab==='courses' ? '' : 'none';
+  if (tab==='courses') renderCourseBuilder();
+}
+
+// ══ COURSE BUILDER RENDER ═════════════════════════════════════════════════
+function renderCourseBuilder() {
+  const cb = document.getElementById('cbContent');
+  if (!cb) return;
+
+  const q = _cbSearch.toLowerCase();
+  const grades = ['s1','s2','s3','s4'];
+  const gradeLbls = {s1:'S1',s2:'S2',s3:'S3',s4:'S4'};
+
+  let courses = state.courses || [];
+  if (_cbGrade !== 'all') courses = courses.filter(c => c.grades.includes(_cbGrade));
+  if (q) courses = courses.filter(c => c.name.toLowerCase().includes(q));
+
+  // Conflict map: period → [teacherIds]
+  const periodConflicts = buildPeriodConflictMap();
+
+  const rows = courses.map(course => {
+    const subj = sById(course.subjId);
+    const totalStudents = course.sections.reduce((s,sec) => s + (sec.studentCount||0), 0);
+    const gradeChips = course.grades.map(g =>
+      `<span style="background:${GROUPS.sec.find(x=>x.id===g)?.bg||'#eee'};padding:1px 6px;border-radius:3px;font-size:9px;font-weight:700">${gradeLbls[g]}</span>`
+    ).join('');
+    const expanded = _cbExpanded.has(course.id);
+
+    // Summary chips: periods used
+    const periodsUsed = [...new Set(course.sections.map(s=>s.period).filter(Boolean))];
+    const periodChips = periodsUsed.map(p =>
+      `<span style="font-family:monospace;font-size:10px;font-weight:700;background:var(--blue2);color:var(--blue);padding:1px 6px;border-radius:3px">${p}</span>`
+    ).join('');
+
+    const sectionRows = expanded ? course.sections.map((sec, si) => {
+      const t = tById(sec.teacherId);
+      const conflict = sec.teacherId && sec.period && periodConflicts[sec.period]?.filter(tid => tid===sec.teacherId).length > 1;
+      return `<tr style="background:${conflict?'var(--red2)':'var(--bg)'}">
+        <td style="padding:5px 10px;font-size:11px;font-family:monospace;font-weight:700;color:var(--ink3)">${sec.id||'—'}</td>
+        <td style="padding:5px 10px;font-size:11px">
+          <select class="tbsel" style="font-size:11px;padding:3px 6px" onchange="setSectionPeriod('${course.id}',${si},this.value)">
+            <option value="">— Period —</option>
+            ${SEC_PERIODS.filter(p=>!p.fixed).map(p=>`<option value="${p.id}" ${sec.period===p.id?'selected':''}>${p.id} · ${p.time}</option>`).join('')}
+          </select>
+        </td>
+        <td style="padding:5px 10px;font-size:11px">
+          <select class="tbsel" style="font-size:11px;padding:3px 6px" onchange="setSectionTeacher('${course.id}',${si},this.value)">
+            <option value="">— Teacher —</option>
+            ${TEACHERS.filter(t=>t.schools.includes('sec')).sort((a,b)=>a.name.localeCompare(b.name)).map(t=>{
+              const busy = sec.period && isTchBusyInPeriod(t.id, sec.period, course.id, si);
+              return `<option value="${t.id}" ${sec.teacherId===t.id?'selected':''} ${busy?'style="color:var(--red)"':''}>
+                ${t.name}${busy?' ⚠':''}
+              </option>`;
+            }).join('')}
+          </select>
+        </td>
+        <td style="padding:5px 10px;font-size:11px">
+          <input type="number" min="0" value="${sec.studentCount||0}"
+            onchange="setSectionCount('${course.id}',${si},this.value)"
+            style="width:60px;border:1px solid var(--rule);border-radius:4px;padding:3px 6px;font-size:11px;font-family:inherit">
+        </td>
+        <td style="padding:5px 10px">
+          <button class="mbt red" style="font-size:10px;padding:3px 8px" onclick="deleteSection('${course.id}',${si})">×</button>
+        </td>
+      </tr>`;
+    }).join('') : '';
+
+    const sectionsTable = expanded ? `
+      <tr><td colspan="6" style="padding:0;background:var(--white)">
+        <div style="padding:8px 14px 10px">
+          <table style="width:100%;border-collapse:collapse">
+            <thead><tr style="border-bottom:1px solid var(--rule2)">
+              <th style="padding:4px 10px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--ink3);text-align:left">Section ID</th>
+              <th style="padding:4px 10px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--ink3);text-align:left">Period</th>
+              <th style="padding:4px 10px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--ink3);text-align:left">Teacher</th>
+              <th style="padding:4px 10px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.06em;color:var(--ink3);text-align:left">Students</th>
+              <th></th>
+            </tr></thead>
+            <tbody>${sectionRows}</tbody>
+          </table>
+          <button class="tbtn" style="margin-top:8px;font-size:11px" onclick="addSection('${course.id}')">+ Add section</button>
+        </div>
+      </td></tr>` : '';
+
+    const conflictCount = course.sections.filter(sec =>
+      sec.teacherId && sec.period && periodConflicts[sec.period]?.filter(tid=>tid===sec.teacherId).length > 1
+    ).length;
+
+    return `
+      <tr class="cb-course-row" onclick="toggleCourse('${course.id}')" style="cursor:pointer;${expanded?'background:var(--blue2)':''}">
+        <td style="padding:9px 12px;width:28px">
+          <span style="font-size:11px;color:var(--ink3)">${expanded?'▾':'▸'}</span>
+        </td>
+        <td style="padding:9px 12px">
+          <div style="display:flex;align-items:center;gap:8px">
+            <div style="width:10px;height:10px;border-radius:2px;background:${subj?.col||'#eee'};border:1px solid rgba(0,0,0,.1);flex-shrink:0"></div>
+            <span style="font-size:13px;font-weight:600">${course.name}</span>
+            ${conflictCount ? `<span style="font-size:10px;color:var(--red);background:var(--red2);padding:1px 6px;border-radius:3px">⚠ ${conflictCount} conflict${conflictCount>1?'s':''}</span>` : ''}
+          </div>
+        </td>
+        <td style="padding:9px 12px">${gradeChips}</td>
+        <td style="padding:9px 12px;font-size:11px;color:var(--ink3)">${course.sections.length} section${course.sections.length!==1?'s':''}</td>
+        <td style="padding:9px 12px">${periodChips}</td>
+        <td style="padding:9px 12px;font-size:11px;color:var(--ink3)">${totalStudents || '—'}</td>
+        <td style="padding:9px 12px" onclick="event.stopPropagation()">
+          <button class="tbtn" style="font-size:11px;padding:3px 9px" onclick="openEditCourse('${course.id}')">Edit</button>
+          <button class="mbt red" style="font-size:11px;padding:3px 9px;margin-left:4px" onclick="deleteCourse('${course.id}')">×</button>
+        </td>
+      </tr>
+      ${sectionsTable}`;
+  }).join('');
+
+  // Period load overview
+  const loadHtml = buildPeriodLoadHtml();
+
+  cb.innerHTML = `
+    <div style="padding:14px 16px;flex:1;overflow:auto">
+      ${loadHtml}
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap">
+        <div style="display:flex;gap:3px">
+          ${['all','s1','s2','s3','s4'].map(g => `
+            <button class="tg-age-btn ${_cbGrade===g?'active':''}" onclick="setCBGrade('${g}',this)"
+              style="padding:4px 10px;font-size:11px">${g==='all'?'All grades':g.toUpperCase()}</button>
+          `).join('')}
+        </div>
+        <input class="sb-s" placeholder="Search courses..." oninput="_cbSearch=this.value;renderCourseBuilder()"
+          style="width:180px" value="${_cbSearch}">
+        <button class="tbtn" onclick="addCourse()" style="margin-left:auto">+ New course</button>
+        <button class="tbtn" onclick="importCoursesFromCSV()" style="font-size:11px">Import from CSV</button>
+      </div>
+      <table style="width:100%;border-collapse:collapse;background:var(--white);border-radius:10px;overflow:hidden;box-shadow:0 1px 4px rgba(0,0,0,.05)">
+        <thead><tr style="background:#2a2a2e">
+          <th style="width:28px;padding:8px"></th>
+          <th style="padding:8px 12px;font-size:11px;font-weight:700;color:#fff;text-align:left">Course</th>
+          <th style="padding:8px 12px;font-size:11px;font-weight:700;color:#fff;text-align:left">Grades</th>
+          <th style="padding:8px 12px;font-size:11px;font-weight:700;color:#fff;text-align:left">Sections</th>
+          <th style="padding:8px 12px;font-size:11px;font-weight:700;color:#fff;text-align:left">Periods</th>
+          <th style="padding:8px 12px;font-size:11px;font-weight:700;color:#fff;text-align:left">Students</th>
+          <th style="padding:8px 12px;font-size:11px;font-weight:700;color:#fff"></th>
+        </tr></thead>
+        <tbody>${rows||'<tr><td colspan="7" style="text-align:center;padding:24px;color:var(--ink3);font-size:12px">No courses match filter</td></tr>'}</tbody>
+      </table>
+    </div>`;
+}
+
+function buildPeriodLoadHtml() {
+  const load = {};
+  SEC_PERIODS.filter(p=>!p.fixed).forEach(p => load[p.id] = 0);
+  (state.courses||[]).forEach(c =>
+    c.sections.forEach(sec => { if (sec.period && load[sec.period]!==undefined) load[sec.period]++; })
+  );
+  const max = Math.max(...Object.values(load), 1);
+  const chips = SEC_PERIODS.filter(p=>!p.fixed).map(p => {
+    const n = load[p.id]||0;
+    const pct = Math.round(n/max*100);
+    const col = n===0?'var(--rule2)':n>8?'var(--red)':n>5?'var(--amber)':'var(--blue)';
+    return `<div style="text-align:center;min-width:56px">
+      <div style="font-size:10px;font-weight:700;font-family:monospace;color:var(--ink3);margin-bottom:3px">${p.id}</div>
+      <div style="height:40px;background:var(--rule2);border-radius:4px;overflow:hidden;position:relative">
+        <div style="position:absolute;bottom:0;left:0;right:0;height:${pct}%;background:${col};transition:.3s"></div>
+      </div>
+      <div style="font-size:10px;color:var(--ink3);margin-top:2px">${n} sec</div>
+    </div>`;
+  }).join('');
+  return `<div style="background:var(--white);border:1px solid var(--rule);border-radius:8px;padding:10px 14px;margin-bottom:12px">
+    <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:var(--ink3);margin-bottom:8px">Period Load — sections per period</div>
+    <div style="display:flex;gap:6px;align-items:flex-end">${chips}</div>
+  </div>`;
+}
+
+function buildPeriodConflictMap() {
+  const map = {};
+  (state.courses||[]).forEach(c =>
+    c.sections.forEach(sec => {
+      if (sec.teacherId && sec.period) {
+        if (!map[sec.period]) map[sec.period] = [];
+        map[sec.period].push(sec.teacherId);
+      }
+    })
+  );
+  return map;
+}
+
+function isTchBusyInPeriod(tid, period, excludeCourseId, excludeSecIdx) {
+  // Check course sections
+  const busyInCourses = (state.courses||[]).some(c =>
+    c.sections.some((sec, si) => {
+      if (c.id===excludeCourseId && si===excludeSecIdx) return false;
+      return sec.teacherId===tid && sec.period===period;
+    })
+  );
+  // Check main sched
+  const busyInSched = ['ms','sec','ele'].some(sc =>
+    Object.values(state[sc].sched||{}).some(gs =>
+      Object.values(gs||{}).some(ss => ss[period]?.teacherId===tid)
+    )
+  );
+  return busyInCourses || busyInSched;
+}
+
+// ── COURSE ACTIONS ────────────────────────────────────────────────────────
+function toggleCourse(id) {
+  if (_cbExpanded.has(id)) _cbExpanded.delete(id);
+  else _cbExpanded.add(id);
+  renderCourseBuilder();
+}
+
+function setCBGrade(g) { _cbGrade=g; renderCourseBuilder(); }
+
+function addSection(courseId) {
+  const course = state.courses.find(c=>c.id===courseId);
+  if (!course) return;
+  const idx = course.sections.length + 1;
+  const secId = course.name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,3) + '-' + idx;
+  course.sections.push({id:secId, period:'', teacherId:null, studentCount:0, studentIds:[]});
+  _cbExpanded.add(courseId);
+  renderCourseBuilder();
+}
+
+function deleteSection(courseId, si) {
+  const course = state.courses.find(c=>c.id===courseId);
+  if (!course) return;
+  course.sections.splice(si, 1);
+  renderCourseBuilder();
+}
+
+function setSectionPeriod(courseId, si, val) {
+  const course = state.courses.find(c=>c.id===courseId);
+  if (course) course.sections[si].period = val;
+  renderCourseBuilder();
+}
+
+function setSectionTeacher(courseId, si, val) {
+  const course = state.courses.find(c=>c.id===courseId);
+  if (course) course.sections[si].teacherId = val||null;
+  renderCourseBuilder();
+}
+
+function setSectionCount(courseId, si, val) {
+  const course = state.courses.find(c=>c.id===courseId);
+  if (course) course.sections[si].studentCount = Number(val)||0;
+}
+
+function deleteCourse(id) {
+  if (!confirm('Delete this course and all its sections?')) return;
+  state.courses = state.courses.filter(c=>c.id!==id);
+  _cbExpanded.delete(id);
+  renderCourseBuilder();
+}
+
+function addCourse() {
+  openEditCourse(null);
+}
+
+function openEditCourse(id) {
+  const course = id ? state.courses.find(c=>c.id===id) : null;
+  _cbEditCourse = id;
+  document.getElementById('ceEditTitle').textContent = course ? 'Edit Course' : 'New Course';
+  document.getElementById('ceCourseName').value = course?.name || '';
+  document.getElementById('ceCourseSubj').value = course?.subjId || '';
+  // Grade checkboxes
+  ['s1','s2','s3','s4'].forEach(g => {
+    const cb = document.getElementById('ce_'+g);
+    if (cb) cb.checked = course ? course.grades.includes(g) : false;
+  });
+  document.getElementById('courseEditOverlay').classList.add('open');
+}
+
+function saveEditCourse() {
+  const name = document.getElementById('ceCourseName').value.trim();
+  if (!name) { alert('Course name required'); return; }
+  const subjId = document.getElementById('ceCourseSubj').value;
+  const grades = ['s1','s2','s3','s4'].filter(g => document.getElementById('ce_'+g)?.checked);
+  if (!grades.length) { alert('Select at least one grade'); return; }
+
+  if (_cbEditCourse) {
+    const course = state.courses.find(c=>c.id===_cbEditCourse);
+    if (course) { course.name=name; course.subjId=subjId; course.grades=grades; }
+  } else {
+    const id = 'c_' + name.toLowerCase().replace(/[^a-z0-9]/g,'_') + '_' + Date.now();
+    state.courses.push({id, name, grades, subjId, sections:[]});
+  }
+  closeOverlay('courseEditOverlay');
+  renderCourseBuilder();
+}
+
+function importCoursesFromCSV() {
+  const inp = document.createElement('input');
+  inp.type='file'; inp.accept='.csv';
+  inp.onchange = e => {
+    const f = e.target.files[0]; if (!f) return;
+    const r = new FileReader();
+    r.onload = ev => parseCourseCSV(ev.target.result);
+    r.readAsText(f);
+  };
+  inp.click();
+}
+
+function parseCourseCSV(text) {
+  const lines = text.trim().split('\n');
+  const header = lines[0].split(',').map(h=>h.trim().replace(/^"|"$/g,'').toLowerCase());
+  let added=0, skipped=0;
+  lines.slice(1).forEach(line => {
+    const vals=[]; let cur='',inq=false;
+    for(const ch of line){if(ch==='"')inq=!inq;else if(ch===','&&!inq){vals.push(cur);cur='';}else cur+=ch;}
+    vals.push(cur);
+    const row={}; header.forEach((h,i)=>row[h]=(vals[i]||'').trim());
+    if (!row.name && !row['course name'] && !row.course) { skipped++; return; }
+    const name = row.name||row['course name']||row.course;
+    if (state.courses.find(c=>c.name.toLowerCase()===name.toLowerCase())) { skipped++; return; }
+    const grades = (row.grades||row.grade||'s1,s2,s3,s4').split(/[,;]/).map(g=>g.trim().toLowerCase()).filter(g=>['s1','s2','s3','s4'].includes(g));
+    const subjId = row.subject||row.subj||'';
+    const id = 'c_' + name.toLowerCase().replace(/[^a-z0-9]/g,'_') + '_' + Date.now() + added;
+    state.courses.push({id, name, grades:grades.length?grades:['s1','s2','s3','s4'], subjId, sections:[]});
+    added++;
+  });
+  alert(`Imported ${added} courses. Skipped ${skipped} (duplicates or empty).`);
+  renderCourseBuilder();
+}
+
+(function(){const ss=document.getElementById('secSubtabs');if(ss)ss.style.display=school==='sec'?'flex':'none';const cb=document.getElementById('cbContent');if(cb&&school==='sec'){cb.style.display='';}})();
+renderAll();
+</script>
+
+<!-- TRAVELING GROUP EDIT MODAL -->
+<div class="overlay" id="tgEditOverlay">
+  <div class="modal" style="width:400px">
+    <div class="m-hd"><div class="m-hd-txt"><h2 id="tgEditTitle">Edit Group</h2><p>Name and elective type</p></div><span class="mx" onclick="closeOverlay('tgEditOverlay')">x</span></div>
+    <div class="m-bd">
+      <div class="eg-row"><span class="eg-lbl">Name</span><input class="eg-inp" id="tgEditName" placeholder="e.g. Symphonic Band"></div>
+      <div class="eg-row"><span class="eg-lbl">ID</span><input class="eg-inp" id="tgEditId" placeholder="e.g. 11A" style="flex:0 0 80px;max-width:80px"></div>
+      <div class="eg-row"><span class="eg-lbl">Elective</span>
+        <select class="eg-inp" id="tgEditElective">
+          <option value="symphonic_band">Symphonic Band</option>
+          <option value="advanced_strings">Advanced Strings</option>
+          <option value="intermediate_strings">Intermediate Strings</option>
+          <option value="concert_band">Concert Band</option>
+          <option value="vocal_music">Vocal Music</option>
+          <option value="general_music">General Music</option>
+          <option value="custom">Custom</option>
+        </select>
+      </div>
+      <div class="eg-row"><span class="eg-lbl">Students</span><input class="eg-inp" id="tgEditCount" type="number" min="0" placeholder="0" style="flex:0 0 80px;max-width:80px"></div>
+    </div>
+    <div class="m-ft">
+      <button class="mbt red" onclick="deleteTGGroup()" style="margin-right:auto">Delete</button>
+      <button class="mbt" onclick="closeOverlay('tgEditOverlay')">Cancel</button>
+      <button class="mbt pri" onclick="saveTGGroup()">Save</button>
+    </div>
+  </div>
+</div>
+
+
+<!-- COURSE EDIT MODAL -->
+<div class="overlay" id="courseEditOverlay">
+  <div class="modal" style="width:420px">
+    <div class="m-hd"><div class="m-hd-txt"><h2 id="ceEditTitle">New Course</h2><p>Name, subject, grades</p></div><span class="mx" onclick="closeOverlay('courseEditOverlay')">x</span></div>
+    <div class="m-bd">
+      <div class="eg-row"><span class="eg-lbl">Name</span><input class="eg-inp" id="ceCourseName" placeholder="e.g. Biology"></div>
+      <div class="eg-row"><span class="eg-lbl">Subject</span>
+        <select class="eg-inp" id="ceCourseSubj">
+          <option value="">Select subject</option>
+          <option value="lit1">Lit/Writing I</option><option value="lit2">Lit/Writing II</option>
+          <option value="aplit">AP Literature/Lang</option><option value="ie_s">IE / Transition Eng</option>
+          <option value="math_s">Algebra / Geometry</option><option value="precalc">Pre-Calculus</option>
+          <option value="calc">AP Calculus</option><option value="bio">Biology</option>
+          <option value="chem">Chemistry</option><option value="phys">Physics</option>
+          <option value="hist_s">History / Social Studies</option><option value="kaz_s">Kazakh Language</option>
+          <option value="kazhist_s">Kazakh History</option><option value="rus_s">Russian Language</option>
+          <option value="spa_s">Spanish Language</option><option value="fre_s">French Language</option>
+          <option value="art_s">Art</option><option value="music_s">Music</option>
+          <option value="pe_s">Physical Education</option><option value="tech_s">Technology</option>
+          <option value="econ">Economics</option><option value="sr">Senior Research</option>
+        </select>
+      </div>
+      <div class="eg-row" style="align-items:flex-start"><span class="eg-lbl" style="padding-top:4px">Grades</span>
+        <div style="display:flex;gap:12px;flex-wrap:wrap">
+          <label style="display:flex;align-items:center;gap:5px;font-size:12px;cursor:pointer"><input type="checkbox" id="ce_s1" style="accent-color:var(--blue)">S1</label>
+          <label style="display:flex;align-items:center;gap:5px;font-size:12px;cursor:pointer"><input type="checkbox" id="ce_s2" style="accent-color:var(--blue)">S2</label>
+          <label style="display:flex;align-items:center;gap:5px;font-size:12px;cursor:pointer"><input type="checkbox" id="ce_s3" style="accent-color:var(--blue)">S3</label>
+          <label style="display:flex;align-items:center;gap:5px;font-size:12px;cursor:pointer"><input type="checkbox" id="ce_s4" style="accent-color:var(--blue)">S4</label>
+        </div>
+      </div>
+    </div>
+    <div class="m-ft"><button class="mbt" onclick="closeOverlay('courseEditOverlay')">Cancel</button><button class="mbt pri" onclick="saveEditCourse()">Save</button></div>
+  </div>
+</div>
+
+</body>
+</html>
